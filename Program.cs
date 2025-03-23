@@ -131,12 +131,16 @@ namespace Genspil
 
                         lager.Add(new Braetspil(navn, version, stand, pris, genre, antalSpillere));
                         Console.WriteLine("Spil tilføjet!");
+                        Thread.Sleep(3000);
+                        StartMenu();
                         break;
                     case 2:
                         Console.WriteLine("Indtast navn på spil der skal fjernes:");
                         string spilNavn = Console.ReadLine();
                         lager.RemoveAll(s => s.Navn == spilNavn);
                         Console.WriteLine("Spil fjernet!");
+                        Thread.Sleep(3000);
+                        StartMenu();
                         break;
                     case 3:
                         Console.WriteLine("Lagerstatus:");
@@ -144,6 +148,8 @@ namespace Genspil
                         {
                             Console.WriteLine($"{spil.Navn}, {spil.Version}, {spil.Pris} kr");
                         }
+                        Thread.Sleep(3000);
+                        StartMenu();
                         break;
                     case 4:
                         StartMenu();
