@@ -6,7 +6,6 @@ namespace Genspil
 {
     internal class Program
     {
-        private static List<Braetspil> lager = new List<Braetspil>();
         private static List<Reservation> reservationer = new List<Reservation>();
         private static List<Forespoergsel> forespoergsler = new List<Forespoergsel>();
         private static bool loggedIn = false;
@@ -93,6 +92,7 @@ namespace Genspil
                             StartMenu();
                             break;
                         }
+                    case 6:
                         Console.WriteLine("\nProgrammet afsluttes...");
                         Thread.Sleep(2000);
                         Environment.Exit(0);
@@ -129,31 +129,33 @@ namespace Genspil
                         Console.WriteLine("Indtast antal spillere:");
                         string antalSpillere = Console.ReadLine();
 
-                        lager.Add(new Braetspil(navn, version, stand, pris, genre, antalSpillere));
-                        Console.WriteLine("Spil tilføjet!");
-                        Thread.Sleep(3000);
+                        BraetspilManager.Instance.TilfoejSpil(new Braetspil(navn, version, stand, pris, genre, antalSpillere));
+                        Thread.Sleep(2000);
                         StartMenu();
                         break;
+
                     case 2:
+                        foreach (var spil in BraetspilManager.Instance.HentLager())
+                        {
+                            Console.WriteLine(spil.Navn);
+                        }
                         Console.WriteLine("Indtast navn på spil der skal fjernes:");
                         string spilNavn = Console.ReadLine();
-                        lager.RemoveAll(s => s.Navn == spilNavn);
-                        Console.WriteLine("Spil fjernet!");
-                        Thread.Sleep(3000);
+                        BraetspilManager.Instance.FjernSpil(spilNavn);
+                        Thread.Sleep(2000);
                         StartMenu();
                         break;
+
                     case 3:
-                        Console.WriteLine("Lagerstatus:");
-                        foreach (var spil in lager)
-                        {
-                            Console.WriteLine($"{spil.Navn}, {spil.Version}, {spil.Pris} kr");
-                        }
-                        Thread.Sleep(3000);
+                        BraetspilManager.Instance.VisLager();
+                        Console.ReadLine();
                         StartMenu();
                         break;
+
                     case 4:
                         StartMenu();
                         break;
+
                     default:
                         Fejlmeddelelse();
                         break;
@@ -164,6 +166,7 @@ namespace Genspil
                 Fejlmeddelelse();
             }
         }
+
 
         static void ReservationMenu()
         {
@@ -183,7 +186,7 @@ namespace Genspil
         {
             Console.WriteLine("Indtast adgangskode:");
             string kode = Console.ReadLine();
-            if (kode == "test123")
+            if (kode == "1")
             {
                 loggedIn = true;
                 Console.WriteLine("Login succesfuldt!");
