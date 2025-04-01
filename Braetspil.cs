@@ -22,6 +22,8 @@ internal class Braetspil
 }
 
 // Brug enum til lagerstand :)
+// Brug enum til stand på brætspil
+// Søgefunktion måske contain??
 internal class BraetspilManager
     {
         private static BraetspilManager _instance;
