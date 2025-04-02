@@ -21,8 +21,8 @@ namespace Genspil
             Console.ResetColor();
             Console.Clear();
             Console.WriteLine("\nGenspil Management System\nDu har nu følgende muligheder");
-            Console.WriteLine("1. Lagerstatus  |  2. Reservationer  |  3. Forespørgsel");
-            Console.WriteLine("4. Medarbejder login |  5. Medarbejder logud  |  6. Afslut\n");
+            Console.WriteLine("1. Lagerstatus  |  2. Reservationer         |  3. Forespørgsel");
+            Console.WriteLine("4. Kundedata    |  5. Medarbejder login/ud  |  6. Afslut\n");
             Console.WriteLine("Indtast hvilken funktion du vil køre:");
 
             if (int.TryParse(Console.ReadLine(), out int taskNum))
@@ -70,14 +70,14 @@ namespace Genspil
                     case 4:
                         if (loggedIn)
                         {
-                            Console.WriteLine("Du er allerede logged ind!");
-                            Thread.Sleep(3000);
-                            StartMenu();
+                            KundeMenu();
                             break;
                         }
                         else
                         {
-                            MedarbejderLogin();
+                            Console.WriteLine("Du er ikke logged ind!");
+                            Thread.Sleep(3000);
+                            StartMenu();
                             break;
                         }
                     case 5:
@@ -88,9 +88,7 @@ namespace Genspil
                         }
                         else
                         {
-                            Console.WriteLine("Du er ikke logged ind!");
-                            Thread.Sleep(3000);
-                            StartMenu();
+                            MedarbejderLogin();
                             break;
                         }
                     case 6:
@@ -168,6 +166,90 @@ namespace Genspil
             }
         }
 
+        static void KundeMenu()
+        {
+            Console.WriteLine("1. Opret kunde  |  2. Find Kunde         |  3. Opdater Kunde");
+            Console.WriteLine("4. Slet Kunde    |  5. Vis Alle Kunder  |  6. Afslut\n");
+            Console.WriteLine("Vælg en handling:");
+
+            KundeManager kundeManager = new KundeManager();
+
+            if (int.TryParse(Console.ReadLine(), out int kvalg))
+            {
+                switch (kvalg)
+                {
+                    case 1:
+                        Console.Write("Navn: ");
+                        string navn = Console.ReadLine();
+                        Console.Write("Email: ");
+                        string email = Console.ReadLine();
+                        Console.Write("Adresse: ");
+                        string adresse = Console.ReadLine();
+                        Console.Write("Telefonnummer: ");
+                        string tlfNr = Console.ReadLine();
+                        kundeManager.OpretKunde(navn, email, adresse, tlfNr);
+                        break;
+
+                    case 2:
+                        Console.Write("Indtast kunde ID: ");
+                        if (int.TryParse(Console.ReadLine(), out int kundeId))
+                        {
+                            var kunde = kundeManager.FindKunde(kundeId);
+                            if (kunde != null)
+                                Console.WriteLine($"Navn: {kunde.Navn}, Email: {kunde.Email}, Adresse: {kunde.Adresse}");
+                            else
+                                Console.WriteLine("Kunde ikke fundet.");
+                        }
+                        break;
+
+                    case 3:
+                        Console.Write("Indtast kunde ID: ");
+                        if (int.TryParse(Console.ReadLine(), out int opdaterId))
+                        {
+                            Console.Write("Nyt navn: ");
+                            string nytNavn = Console.ReadLine();
+                            Console.Write("Ny email: ");
+                            string nyEmail = Console.ReadLine();
+                            Console.Write("Ny adresse: ");
+                            string nyAdresse = Console.ReadLine();
+                            Console.Write("Nyt telefonnummer: ");
+                            string nyTlfNr = Console.ReadLine();
+                            kundeManager.OpdaterKunde(opdaterId, nytNavn, nyEmail, nyAdresse, nyTlfNr);
+
+                        }
+                        break;
+
+                    case 4:
+                        Console.Write("Indtast kunde ID: ");
+                        if (int.TryParse(Console.ReadLine(), out int sletId))
+                        {
+                            kundeManager.SletKunde(sletId);
+                        }
+                        break;
+
+                    case 5:
+                        kundeManager.VisAlleKunder();
+                        Console.ReadLine();
+                        break;
+
+                    case 6:
+                        Console.WriteLine("\nProgrammet afsluttes...");
+                        Thread.Sleep(2000);
+                        Environment.Exit(0);
+                        break;
+
+                    default:
+                        Fejlmeddelelse();
+                        break;
+                }
+            }
+            else
+            {
+                Fejlmeddelelse();
+
+            }
+            StartMenu();
+        }
 
         static void ReservationMenu()
         {
@@ -242,7 +324,10 @@ namespace Genspil
             string kundeEmail = Console.ReadLine();
             Console.Write("Indtast status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
 
-            if(!int.TryParse(Console.ReadLine(), out int statusNum) || !Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
+            KundeManager kundeManager = new KundeManager();
+            var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
+
+            if (!int.TryParse(Console.ReadLine(), out int statusNum) || !Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
             {
                 Console.WriteLine("Ugyldig status. Prøv igen.");
                 statusNum = (int)ForespoergselsStatus.Afventer;
@@ -250,7 +335,7 @@ namespace Genspil
 
             ForespoergselsStatus status = (ForespoergselsStatus)statusNum;
 
-            Kunde kunde = new Kunde(kundeNavn, kundeAdresse, kundeTelefon, kundeEmail);
+            //Kunde kunde = new Kunde(kundeNavn, kundeAdresse, kundeTelefon, kundeEmail);
 
             int forespørgselsNr = GenererForespoergselsnummer();
             Forespoergsel forespørgsel = new Forespoergsel(forespørgselsNr, dato, spilNavn, status, kunde);

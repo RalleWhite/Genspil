@@ -7,19 +7,14 @@ public enum ForespoergselsStatus
     Afsluttet = 2,
     Annulleret = 3
 }
+
 internal class Forespoergsel
 {
     public int ForespoergselNr { get; set; }
     public DateTime Dato { get; set; }
-      
     public string SpilNavn { get; set; }
-
     public ForespoergselsStatus Status { get; set; }
-
     public Kunde Kunde { get; set; }
-
-    
-
 
     public Forespoergsel(int forespoergselNr, DateTime dato, string spilNavn, ForespoergselsStatus status, Kunde kunde)
     {
@@ -28,6 +23,5 @@ internal class Forespoergsel
         SpilNavn = spilNavn;
         Status = status;
         Kunde = kunde;
-
-     }    
+    }
 }
