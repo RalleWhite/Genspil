@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 internal class Kunde
 {
-    public int KundeId { get; set; } // Unique ID for each Kunde (Customer)
+    public int KundeId { get; set; }
     public string Navn { get; set; }
     public string Email { get; set; }
     public string Adresse { get; set; }
-    public string TlfNr { get; set; } // Adding phone number back for compatibility
-    public List<int> Ordrer { get; set; } = new List<int>(); // Orders made by the customer
-    public List<int> Ønskeliste { get; set; } = new List<int>(); // Wishlist items of the customer
+    public string TlfNr { get; set; }
+    public List<int> Ordrer { get; set; } = new List<int>();
+    public List<int> Ønskeliste { get; set; } = new List<int>();
 
     public Kunde(int kundeId, string navn, string email, string adresse, string tlfNr)
     {
@@ -75,7 +75,7 @@ internal class KundeManager
         Console.WriteLine("Kundeliste:");
         foreach (var kunde in kunder.Values)
         {
-            Console.WriteLine($"ID: {kunde.KundeId}, Navn: {kunde.Navn}, Email: {kunde.Email}, TlfNr: {kunde.TlfNr}");
+            Console.WriteLine($"ID: {kunde.KundeId}, Navn: {kunde.Navn}, Adresse: {kunde.Adresse} ,Email: {kunde.Email}, TlfNr: {kunde.TlfNr}");
         }
     }
 }

@@ -10,9 +10,11 @@ namespace Genspil
         private static List<Reservation> reservationer = new List<Reservation>();
         private static List<Forespoergsel> forespoergsler = new List<Forespoergsel>();
         private static bool loggedIn = false;
+        static KundeManager kundeManager = new KundeManager();
 
         static void Main(string[] args)
         {
+            BraetspilManager.Instance.TilfoejDefaultSpil();
             StartMenu();
         }
 
@@ -109,7 +111,7 @@ namespace Genspil
 
         static void LagerMenu()
         {
-            Console.WriteLine("1. Tilføj spil | 2. Fjern spil | 3. Vis lager | 4. Tilbage");
+            Console.WriteLine("1. Tilføj spil | 2. Fjern spil | 3. Vis lager | 4. Søg i Lager | 6. Tilbage");
             if (int.TryParse(Console.ReadLine(), out int valg))
             {
                 switch (valg)
@@ -127,8 +129,11 @@ namespace Genspil
                         string genre = Console.ReadLine();
                         Console.WriteLine("Indtast antal spillere:");
                         string antalSpillere = Console.ReadLine();
+                        Console.WriteLine("Indtast lagerstatus: 1 = På lager, 2 = Bestilt hjem");
+                        int statusInt = int.Parse(Console.ReadLine());
+                        Lagerstatus lagerstatus = (Lagerstatus)(statusInt - 1);
 
-                        BraetspilManager.Instance.TilfoejSpil(new Braetspil(navn, version, stand, pris, genre, antalSpillere));
+                        BraetspilManager.Instance.TilfoejSpil(new Braetspil(navn, version, stand, pris, genre, antalSpillere, lagerstatus));
                         Thread.Sleep(2000);
                         StartMenu();
                         break;
@@ -152,6 +157,65 @@ namespace Genspil
                         break;
 
                     case 4:
+                        Console.WriteLine("Søg efter et brætspil:");
+
+                        Console.WriteLine("Indtast navnet på spillet (eller tryk Enter for at springe over):");
+                        string searchTerm = Console.ReadLine();
+
+                        Console.WriteLine("Indtast genre (eller tryk Enter for at springe over):");
+                        string searchGenre = Console.ReadLine();
+
+                        Console.WriteLine("Indtast version (eller tryk Enter for at springe over):");
+                        string searchVersion = Console.ReadLine();
+
+                        Console.WriteLine("Indtast stand (eller tryk Enter for at springe over):");
+                        string searchStand = Console.ReadLine();
+
+                        Console.WriteLine("Indtast antal spillere (eller tryk Enter for at springe over):");
+                        string searchAntalSpillere = Console.ReadLine();
+
+                        Console.WriteLine("Indtast lagerstatus (1 = PåLager, 2 = BestiltHjem, 3 = Udgået, eller tryk Enter for at springe over):");
+                        string statusInput = Console.ReadLine();
+                        Lagerstatus? status = null;
+
+                        if (int.TryParse(statusInput, out int statusChoice))
+                        {
+                            status = (Lagerstatus)(statusChoice - 1);
+                        }
+
+                        List<Braetspil> searchResults = BraetspilManager.Instance.SoegSpil(searchTerm, searchGenre, status, searchVersion, searchStand, searchAntalSpillere);
+
+                        if (searchResults.Count > 0)
+                        {
+                            Console.WriteLine("Søgeresultater:");
+                            foreach (var spil in searchResults)
+                            {
+                                switch (spil.Status)
+                                {
+                                    case Lagerstatus.PåLager:
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                        break;
+                                    case Lagerstatus.BestiltHjem:
+                                        Console.ForegroundColor = ConsoleColor.Yellow;
+                                        break;
+                                    case Lagerstatus.Udgået:
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        break;
+                                }
+
+                                Console.WriteLine($"{spil.Navn}, {spil.Version}, {spil.Stand}, {spil.Pris} kr, {spil.Genre}, {spil.AntalSpillere} ({spil.Status})");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ingen spil fundet, der matcher søgningen.");
+                        }
+                        Console.ReadLine();
+                        Console.ResetColor();
+                        StartMenu();
+                        break;
+
+                    case 5:
                         StartMenu();
                         break;
 
@@ -171,8 +235,6 @@ namespace Genspil
             Console.WriteLine("1. Opret kunde  |  2. Find Kunde         |  3. Opdater Kunde");
             Console.WriteLine("4. Slet Kunde    |  5. Vis Alle Kunder  |  6. Afslut\n");
             Console.WriteLine("Vælg en handling:");
-
-            KundeManager kundeManager = new KundeManager();
 
             if (int.TryParse(Console.ReadLine(), out int kvalg))
             {
@@ -324,7 +386,6 @@ namespace Genspil
             string kundeEmail = Console.ReadLine();
             Console.Write("Indtast status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
 
-            KundeManager kundeManager = new KundeManager();
             var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
 
             if (!int.TryParse(Console.ReadLine(), out int statusNum) || !Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
