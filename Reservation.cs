@@ -2,22 +2,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+public enum ReservationStatus
+{
+    Oprettet = 1,
+    Klar = 2,
+    Afhentet = 3,
+    Annulleret = 4
+}
+
+
 internal class Reservation
 {
-    public DateTime Reservationsdato { get; set; }
-    public int Afhentningsnr { get; set; }
-    public DateTime Afhentningsdato { get; set; }
-    public double SamletPris { get; set; }
-    public string Status { get; set; }
+    public int AfhentningsNr { get; set; }
+    public DateTime ReservationsDato { get; set; }
+    public DateTime AfhentningsDato { get; set; }
     public Kunde Kunde { get; set; }
+    public Braetspil Braetspil { get; set; }
+    public ReservationStatus Status;
 
-    public Reservation(DateTime reservationsdato, int afhentningsnr, DateTime afhentningsdato, double samletPris, string status, Kunde kunde)
+    public Reservation(int afhentningsNr, DateTime reservationsDato, DateTime afhentningsDato, Kunde kunde, Braetspil braetspil, ReservationStatus status)
     {
-        Reservationsdato = reservationsdato;
-        Afhentningsnr = afhentningsnr;
-        Afhentningsdato = afhentningsdato;
-        SamletPris = samletPris;
-        Status = status;
+        AfhentningsNr = afhentningsNr;
+        ReservationsDato = reservationsDato;
+        AfhentningsDato = afhentningsDato;
         Kunde = kunde;
+        Braetspil = braetspil;
+        Status = status;
     }
 }

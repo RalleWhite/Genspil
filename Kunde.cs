@@ -75,7 +75,7 @@ internal class KundeManager
         Console.WriteLine("Kundeliste:");
         foreach (var kunde in kunder.Values)
         {
-            Console.WriteLine($"ID: {kunde.KundeId}, Navn: {kunde.Navn}, Adresse: {kunde.Adresse} ,Email: {kunde.Email}, TlfNr: {kunde.TlfNr}");
+            Console.WriteLine($"KundeNr.: {kunde.KundeId}, Navn: {kunde.Navn}, Adresse: {kunde.Adresse}, Email: {kunde.Email}, TlfNr: {kunde.TlfNr}");
         }
     }
 }

@@ -5,6 +5,7 @@ internal class Medarbejder
     public string TlfNr { get; set; }
     public string Email { get; set; }
 
+
     public Medarbejder(string navn, string rolle, string tlfNr, string email)
     {
         Navn = navn;
@@ -13,3 +14,4 @@ internal class Medarbejder
         Email = email;
     }
 }
+

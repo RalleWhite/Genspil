@@ -25,3 +25,4 @@ internal class Forespoergsel
         Kunde = kunde;
     }
 }
+
