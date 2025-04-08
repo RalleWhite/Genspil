@@ -23,8 +23,19 @@ internal class Kunde
 
 internal class KundeManager
 {
+    private static KundeManager _instance;
     private Dictionary<int, Kunde> kunder = new Dictionary<int, Kunde>();
     private int næsteKundeId = 1;
+
+    public static KundeManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new KundeManager();
+            return _instance;
+        }
+    }
 
     public Kunde OpretKunde(string navn, string email, string adresse, string tlfNr)
     {

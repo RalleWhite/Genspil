@@ -6,9 +6,6 @@ using System.Runtime.CompilerServices;
 class GenspilManagementSystem
 {
     private static bool loggedIn = false;
-    private static List<Forespoergsel> forespoergsler = new List<Forespoergsel>();
-    private static List<Reservation> reservationer = new List<Reservation>();
-    static KundeManager kundeManager = new KundeManager();
 
     public void Kør()
     {
@@ -130,10 +127,10 @@ class GenspilManagementSystem
         string prompt = "--- Lager ---\n";
         string[] menuPunkter = { "Tilføj spil", "Fjern spil", "Vis lager", "Søg i lager", "Tilbage" };
         Menu lagerMenu = new Menu(prompt, menuPunkter);
-        int indexValgt = lagerMenu.Kør(); 
+        int indexValgt = lagerMenu.Kør();
 
         switch (indexValgt)
-            {
+        {
             case 0:
                 Braetspil braetspil = BraetspilManager.Instance.OpretNytSpil();
                 BraetspilManager.Instance.TilfoejSpil(braetspil);
@@ -163,13 +160,13 @@ class GenspilManagementSystem
                 KørStartMenu();
                 break;
         }
-        
+
     }
 
     private void KørMedarbejderMenu()
     {
         string prompt = "--- MedarbejderLogin ---\n";
-        string[] menuPunkter = { "Login/Logud", "Tilføj medarbejder","Tilbage" };
+        string[] menuPunkter = { "Login/Logud", "Tilføj medarbejder", "Tilbage" };
         Menu medarbejderMenu = new Menu(prompt, menuPunkter);
         int indexValgt = medarbejderMenu.Kør();
 
@@ -243,17 +240,17 @@ class GenspilManagementSystem
         switch (indexValgt)
         {
             case 0:
-                TilføjForespørgsel();
+                ForespoergselManager.Instance.TilfoejForespoergsel(ForespoergselManager.Instance.OpretNyForespoergsel());
                 Thread.Sleep(2000);
                 KørForespoergselMenu();
                 break;
             case 1:
-                VisForespoergsler();
+                ForespoergselManager.Instance.VisForespoergsler();
                 Console.ReadKey(true);
                 KørForespoergselMenu();
                 break;
             case 2:
-                RedigerEllerSletForespoergsel();
+                RedSletForespoergselMenu();
                 KørForespoergselMenu();
                 break;
             case 3:
@@ -263,69 +260,17 @@ class GenspilManagementSystem
         }
     }
 
-    private int GenererForespoergselsnummer()
+    private void RedSletForespoergselMenu()
     {
-        if (forespoergsler.Count == 0) return 1;
-        return forespoergsler.Max(f => f.ForespoergselNr) + 1;
-    }
-    private void TilføjForespørgsel()
-    {
-        Console.WriteLine("--- Tilføj En Forespørgsel --- \n\n");
-        Console.Write("Indtast ønsket spil: ");
-        string spilNavn = Console.ReadLine();
-        Console.Write("Indtast kundens navn: ");
-        string kundeNavn = Console.ReadLine();
-        Console.Write("Indtast kundens telefonnummer: ");
-        string kundeTelefon = Console.ReadLine();
-        Console.Write("Indtast kundens adresse: ");
-        string kundeAdresse = Console.ReadLine();
-        Console.Write("Indtast kundens email: ");
-        string kundeEmail = Console.ReadLine();
-        Console.Write("Indtast status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
-        if (!int.TryParse(Console.ReadLine(), out int statusNum) || !Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
-        {
-            Console.WriteLine("Ugyldig status. Prøv igen.");
-            statusNum = (int)ForespoergselsStatus.Afventer;
-        }
-        ForespoergselsStatus status = (ForespoergselsStatus)statusNum;
+        string prompt = "--- Rediger/Slet Forespørgsel ---\n \n";
+        string[] menuPunkter = { "Rediger forespørgsel", "Slet forespørgsel", "Tilbage" };
+        Menu redSletForespoergselMenu = new Menu(prompt, menuPunkter);
+        int indexValgt = redSletForespoergselMenu.Kør();
 
-        int forespørgselsNr = GenererForespoergselsnummer();
-        DateTime dato = DateTime.Now;
-
-        var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
-        Forespoergsel forespørgsel = new Forespoergsel(forespørgselsNr, dato, spilNavn, status, kunde);
-        forespoergsler.Add(forespørgsel);
-
-        Console.WriteLine("Forespørgslen er oprettet! \n");
-    }
-
-    private void VisForespoergsler()
-    {
-        if (forespoergsler.Count == 0)
-        {
-            Console.WriteLine("Der er ingen forespørgsler");
-            return;
-        }
-        else
-        {
-            foreach (var forespørgsel in forespoergsler)
-            {
-                Console.WriteLine($"Forespørgsel: {forespørgsel.ForespoergselNr}");
-                Console.WriteLine($"Dato: {forespørgsel.Dato.ToShortDateString()}");
-                Console.WriteLine($"Spil: {forespørgsel.SpilNavn}");
-                Console.WriteLine($"Kunde: {forespørgsel.Kunde.Navn}");
-                Console.WriteLine($"Status: {forespørgsel.Status}");
-                Console.WriteLine("\nTryk på enhver knap for at gå tilbage.");
-            }
-        }   
-    }
-
-    private void RedigerEllerSletForespoergsel()
-    {
         Console.WriteLine("Indtast forespørgselsnummer:");
         if (int.TryParse(Console.ReadLine(), out int forespørgselsNr))
         {
-            var forespørgsel = forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNr);
+            var forespørgsel = ForespoergselManager.forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNr);
             if (forespørgsel == null)
             {
                 Console.WriteLine("Forespørgslen blev ikke fundet.");
@@ -333,86 +278,30 @@ class GenspilManagementSystem
                 KørForespoergselMenu();
                 return;
             }
-
-            string prompt = "--- Rediger/Slet Forespørgsel ---\n \n" +
-                $"Rediger forespørgselsnr: {forespørgsel.ForespoergselNr}\n" +
-                $"Dato: {forespørgsel.Dato.ToShortDateString()}\n" + 
-                $"Spil: {forespørgsel.SpilNavn}\n" +
-                $"Kunde: {forespørgsel.Kunde.Navn}\n" +
-                $"Telefon: {forespørgsel.Kunde.TlfNr}\n" +
-                $"Adresse: {forespørgsel.Kunde.Adresse}\n" +
-                $"Email: {forespørgsel.Kunde.Email}\n" +
-                $"Nuværende status: {forespørgsel.Status}\n";
-            string[] menuPunkter = { "Rediger forespørgsel", "Slet forespørgsel", "Tilbage" };
-            Menu redSletForespoergselMenu = new Menu(prompt, menuPunkter);
-            int indexValgt = redSletForespoergselMenu.Kør();
-
-            switch (indexValgt)
-            {
-                case 0:
-                    RedigerForespoergsel(forespørgsel);
-                    Thread.Sleep(2000);
-                    KørForespoergselMenu();
-                    break;
-                case 1:
-                    SletForespoergsel(forespørgselsNr);
-                    Thread.Sleep(2000);
-                    KørForespoergselMenu();
-                    break;
-                case 2:
-                    Console.WriteLine("Annulleret");
-                    Thread.Sleep(2000);
-                    KørForespoergselMenu();
-                    return;
-            }
-        }
-
-    }
-    private void RedigerForespoergsel(Forespoergsel forespørgsel)
-    {
-        Console.WriteLine("Indtast ny status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
-
-        if (int.TryParse(Console.ReadLine(), out int statusNum) && Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
-        {
-            forespørgsel.Status = (ForespoergselsStatus)statusNum;
-            Console.WriteLine("Status for forespørgslen er opdateret!");
-        }
-        else
-        {
-            Console.WriteLine("Status for forespørgslen er ikke opdateret!");
-        }
-    }
-    private void SletForespoergsel(int forespørgselsNr)
-    {
-        var forespørgsel = forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNr);
-        if (forespørgsel == null)
-        {
-            Console.WriteLine("Forespørgslen blev ikke fundet.");
-        }
-        else
-        {
-            Console.WriteLine($"Rediger forespørgsel: {forespørgsel.ForespoergselNr}");
-            Console.WriteLine($"Dato: {forespørgsel.Dato.ToShortDateString()}");
-            Console.WriteLine($"Spil: {forespørgsel.SpilNavn}");
-            Console.WriteLine($"Kunde: {forespørgsel.Kunde.Navn}");
-            Console.WriteLine($"Telefon: {forespørgsel.Kunde.TlfNr}");
-            Console.WriteLine($"Adresse: {forespørgsel.Kunde.Adresse}");
-            Console.WriteLine($"Email: {forespørgsel.Kunde.Email}");
-            Console.WriteLine($"Nuværende status: {forespørgsel.Status}");
-
-            Console.Write("Er du sikker på at du vil slette forespørgslen? (ja/nej): ");
-            string bekræftelse = Console.ReadLine();
-
-            if (bekræftelse.ToLower() == "ja")
-            {
-                forespoergsler.Remove(forespørgsel);
-                Console.WriteLine("Forespørgslen blev slettet!");
-            }
             else
             {
-                Console.WriteLine("Forespørgslen blev ikke slettet.");
+                ForespoergselManager.Instance.VisForespoergsel(forespørgsel);
+                switch (indexValgt)
+                {
+                    case 0:
+                        ForespoergselManager.Instance.RedigerForespoergsel(forespørgsel);
+                        Thread.Sleep(2000);
+                        RedSletForespoergselMenu();
+                        break;
+                    case 1:
+                        ForespoergselManager.Instance.SletForespoergsel(forespørgselsNr);
+                        Thread.Sleep(2000);
+                        RedSletForespoergselMenu();
+                        break;
+                    case 2:
+                        Console.WriteLine("Annulleret");
+                        Thread.Sleep(2000);
+                        RedSletForespoergselMenu();
+                        return;
+                }
             }
         }
+
     }
     private void KørReservationMenu()
     {
@@ -424,17 +313,17 @@ class GenspilManagementSystem
         switch (indexValgt)
         {
             case 0:
-                TilføjReservation();
+                ReservationManager.Instance.TilfoejReservation(ReservationManager.Instance.OpretNyReservation());
                 Thread.Sleep(2000);
                 KørReservationMenu();
                 break;
             case 1:
-                VisReservationer();
+                ReservationManager.Instance.VisReservationer();
                 Console.ReadKey(true);
                 KørReservationMenu();
                 break;
             case 2:
-                RedigerEllerSletReservation();
+                RedSletReservationMenu();
                 KørReservationMenu();
                 break;
             case 3:
@@ -444,77 +333,17 @@ class GenspilManagementSystem
         }
     }
 
-    private int GenererAfhentningsNr()
+    private void RedSletReservationMenu()
     {
-        if (reservationer.Count == 0) return 1;
-        return reservationer.Max(f => f.AfhentningsNr) + 1;
-    }
+        string prompt = "--- Rediger/Slet Reservation ---\n \n";
+        string[] menuPunkter = {"Rediger reservation", "Slet reservation", "Tilbage"};
+        Menu redSletReservationMenu = new Menu(prompt, menuPunkter);
+        int indexValgt = redSletReservationMenu.Kør();
 
-    private void TilføjReservation()
-    {
-        Console.WriteLine("Tilføj En Reservation \n\n");
-        DateTime reservationsDato = DateTime.Now;
-        Console.Write("Indtast dato for afhentning (dd-mm-åååå): ");
-        string inputDato = Console.ReadLine();
-        DateTime afhentningsDato;
-        while (!DateTime.TryParse(inputDato, out afhentningsDato))
-        {
-            Console.WriteLine("Ugyldig dato. Prøv igen.");
-            inputDato = Console.ReadLine();
-        }
-        int afhentningsNr = GenererAfhentningsNr();
-        Console.Write("Indtast status (1. Oprettet | 2. Klar | 3. Afhentet | 4. Annulleret): \n");
-        ReservationStatus status = (ReservationStatus)int.Parse(Console.ReadLine());
-
-        Braetspil braetspil = BraetspilManager.Instance.OpretNytSpil();
-        BraetspilManager.Instance.TilfoejSpil(braetspil);
-
-        Console.Write("Indtast kundens navn: ");
-        string kundeNavn = Console.ReadLine();
-        Console.Write("Indtast kundens telefonnummer: ");
-        string kundeTelefon = Console.ReadLine();
-        Console.Write("Indtast kundens adresse: ");
-        string kundeAdresse = Console.ReadLine();
-        Console.Write("Indtast kundens email: ");
-        string kundeEmail = Console.ReadLine();
-        var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
-
-        Medarbejder medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
-
-        Reservation reservation = new Reservation(afhentningsNr, reservationsDato, afhentningsDato, kunde, braetspil, status, medarbejder);
-        reservationer.Add(reservation);
-        Console.WriteLine("Reservationen er oprettet!");
-    }
-
-    private void VisReservationer()
-    {
-        if (reservationer.Count == 0)
-        {
-            Console.WriteLine("Der er ingen reservationer");
-            return;
-        }
-        else
-        {
-            foreach (var reservation in reservationer)
-            {
-                Console.WriteLine($"Reservation: {reservation.AfhentningsNr}");
-                Console.WriteLine($"Reservationsdato: {reservation.ReservationsDato.ToShortDateString()}");
-                Console.WriteLine($"Afhentningsdato: {reservation.AfhentningsDato.ToShortDateString()}");
-                Console.WriteLine($"Spil: {reservation.Braetspil.Navn}");
-                Console.WriteLine($"Spil: {reservation.Braetspil.Version}");
-                Console.WriteLine($"Kunde: {reservation.Kunde.Navn}");
-                Console.WriteLine($"Status: {reservation.Status}");
-                Console.WriteLine("\nTryk på enhver knap for at gå tilbage.");
-            }
-        }   
-    }
-
-    private void RedigerEllerSletReservation()
-    {
         Console.WriteLine("Indtast afhentningsnr.:");
         if (int.TryParse(Console.ReadLine(), out int afhentningsNr))
         {
-            var reservation = reservationer.Find(f => f.AfhentningsNr == afhentningsNr);
+            var reservation = ReservationManager.reservationer.Find(f => f.AfhentningsNr == afhentningsNr);
             if (reservation == null)
             {
                 Console.WriteLine("Reservationen blev ikke fundet.");
@@ -522,85 +351,27 @@ class GenspilManagementSystem
                 KørReservationMenu();
                 return;
             }
-
-            string prompt = "--- Rediger/Slet Reservation ---\n \n" +
-                $"Rediger afhentningsnr.: {reservation.AfhentningsNr}\n" +
-                $"Afhentningsdato: {reservation.AfhentningsDato.ToShortDateString()}\n" + 
-                $"Spil: {reservation.Braetspil.Navn}\n" +
-                $"Spil: {reservation.Braetspil.Version}\n" +
-                $"Kunde: {reservation.Kunde.Navn}\n" +
-                $"Telefon: {reservation.Kunde.TlfNr}\n" +
-                $"Adresse: {reservation.Kunde.Adresse}\n" +
-                $"Email: {reservation.Kunde.Email}\n" +
-                $"Nuværende status: {reservation.Status}\n";
-            string[] menuPunkter = { "Rediger reservation", "Slet reservation", "Tilbage" };
-            Menu redSletReservationMenu = new Menu(prompt, menuPunkter);
-            int indexValgt = redSletReservationMenu.Kør();
-
-            switch (indexValgt)
-            {
-                case 0:
-                    RedigerReservation(reservation);
-                    Thread.Sleep(2000);
-                    KørReservationMenu();
-                    break;
-                case 1:
-                    SletReservation(afhentningsNr);
-                    Thread.Sleep(2000);
-                    KørReservationMenu();
-                    break;
-                case 2:
-                    Console.WriteLine("Annulleret");
-                    Thread.Sleep(2000);
-                    KørReservationMenu();
-                    return;
-            }
-        }
-
-    }
-    private void RedigerReservation(Reservation reservation)
-    {
-        Console.WriteLine("Indtast ny status: 1 = Oprettet,  2 = Klar, 3 = Afhentet, 4 = Annulleret \n");
-
-        if (int.TryParse(Console.ReadLine(), out int statusNum) && Enum.IsDefined(typeof(ReservationStatus), statusNum))
-        {
-            reservation.Status = (ReservationStatus)statusNum;
-            Console.WriteLine("Status for reservationen er opdateret!");
-        }
-        else
-        {
-            Console.WriteLine("Status for reservationen er ikke opdateret!");
-        }
-    }
-    private void SletReservation(int afhentningsNr)
-    {
-        var reservation = reservationer.Find(f => f.AfhentningsNr == afhentningsNr);
-        if (reservation == null)
-        {
-            Console.WriteLine("Reservationen blev ikke fundet.");
-        }
-        else
-        {
-            Console.WriteLine($"Rediger afhentningsnr.: {reservation.AfhentningsNr}");
-            Console.WriteLine($"Afhentningsdato: {reservation.AfhentningsDato.ToShortDateString()}\n");
-            Console.WriteLine($"Spil: {reservation.Braetspil.Navn}\n");
-            Console.WriteLine($"Kunde: {reservation.Kunde.Navn}\n");
-            Console.WriteLine($"Telefon: {reservation.Kunde.TlfNr}");
-            Console.WriteLine($"Adresse: {reservation.Kunde.Adresse}\n");
-            Console.WriteLine($"Email: {reservation.Kunde.Email}\n");
-            Console.WriteLine($"Nuværende status: {reservation.Status}\n");
-
-            Console.Write("Er du sikker på at du vil slette reservationen? (ja/nej): ");
-            string bekræftelse = Console.ReadLine();
-
-            if (bekræftelse.ToLower() == "ja")
-            {
-                reservationer.Remove(reservation);
-                Console.WriteLine("Reservationen blev slettet!");
-            }
             else
             {
-                Console.WriteLine("Reservationen blev ikke slettet.");
+                ReservationManager.Instance.VisReservation(reservation);
+                switch (indexValgt)
+                {
+                    case 0:
+                        ReservationManager.Instance.RedigerReservation(reservation);
+                        Thread.Sleep(2000);
+                        KørReservationMenu();
+                        break;
+                    case 1:
+                        ReservationManager.Instance.SletReservation(afhentningsNr);
+                        Thread.Sleep(2000);
+                        KørReservationMenu();
+                        break;
+                    case 2:
+                        Console.WriteLine("Annulleret");
+                        Thread.Sleep(2000);
+                        KørReservationMenu();
+                        break;
+                }
             }
         }
     }
@@ -623,7 +394,7 @@ class GenspilManagementSystem
                 string kundeAdresse = Console.ReadLine();
                 Console.Write("Indtast kundens email: ");
                 string kundeEmail = Console.ReadLine();
-                kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
+                KundeManager.Instance.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
                 Console.ReadKey();
                 KørKundeMenu();
                 break;
@@ -632,7 +403,7 @@ class GenspilManagementSystem
                 Console.Write("Indtast kundeNr.: ");
                 if (int.TryParse(Console.ReadLine(), out int kundeId))
                 {
-                    var kunde = kundeManager.FindKunde(kundeId);
+                    var kunde = KundeManager.Instance.FindKunde(kundeId);
                     if (kunde != null)
                         Console.WriteLine($"Navn: {kunde.Navn}, Email: {kunde.Email}, Adresse: {kunde.Adresse}");
                     else
@@ -654,7 +425,7 @@ class GenspilManagementSystem
                     string nyAdresse = Console.ReadLine();
                     Console.Write("Nyt telefonnummer: ");
                     string nyTlfNr = Console.ReadLine();
-                    kundeManager.OpdaterKunde(opdaterId, nytNavn, nyEmail, nyAdresse, nyTlfNr);
+                    KundeManager.Instance.OpdaterKunde(opdaterId, nytNavn, nyEmail, nyAdresse, nyTlfNr);
                 }
                 Console.ReadKey();
                 KørKundeMenu();
@@ -664,14 +435,14 @@ class GenspilManagementSystem
                 Console.Write("Indtast kundeNr.: ");
                 if (int.TryParse(Console.ReadLine(), out int sletId))
                 {
-                    kundeManager.SletKunde(sletId);
+                    KundeManager.Instance.SletKunde(sletId);
                 }
                 Console.ReadKey();
                 KørKundeMenu();
                 break;
 
             case 4:
-                kundeManager.VisAlleKunder();
+                KundeManager.Instance.VisAlleKunder();
                 Console.ReadKey();
                 KørKundeMenu();
                 break;
