@@ -18,9 +18,10 @@ internal class Reservation
     public DateTime AfhentningsDato { get; set; }
     public Kunde Kunde { get; set; }
     public Braetspil Braetspil { get; set; }
+    public Medarbejder Medarbejder { get; set; }
     public ReservationStatus Status;
 
-    public Reservation(int afhentningsNr, DateTime reservationsDato, DateTime afhentningsDato, Kunde kunde, Braetspil braetspil, ReservationStatus status)
+    public Reservation(int afhentningsNr, DateTime reservationsDato, DateTime afhentningsDato, Kunde kunde, Braetspil braetspil, ReservationStatus status, Medarbejder medarbejder)
     {
         AfhentningsNr = afhentningsNr;
         ReservationsDato = reservationsDato;
@@ -28,5 +29,6 @@ internal class Reservation
         Kunde = kunde;
         Braetspil = braetspil;
         Status = status;
+        Medarbejder = medarbejder;
     }
 }

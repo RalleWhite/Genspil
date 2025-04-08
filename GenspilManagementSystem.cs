@@ -88,7 +88,6 @@ class GenspilManagementSystem
             case 3:
                 if (loggedIn)
                 {
-                    Console.WriteLine("KundeMenu HER");
                     KørKundeMenu();
                     break;
                 }
@@ -100,17 +99,8 @@ class GenspilManagementSystem
                     break;
                 }
             case 4:
-                if (loggedIn)
-                {
-                    MedarbejderLogud();
-                    break;
-                }
-                else
-                {
-                    MedarbejderLogin();
-                    KørStartMenu();
-                    break;
-                }
+                KørMedarbejderMenu();
+                break;
             case 5:
                 Console.WriteLine("\nProgrammet afsluttes...");
                 Thread.Sleep(1000);
@@ -170,13 +160,54 @@ class GenspilManagementSystem
                 break;
 
             case 4:
-                KørLagerMenu();
+                KørStartMenu();
                 break;
         }
         
     }
 
-    public void MedarbejderLogin()
+    private void KørMedarbejderMenu()
+    {
+        string prompt = "--- MedarbejderLogin ---\n";
+        string[] menuPunkter = { "Login/Logud", "Tilføj medarbejder","Tilbage" };
+        Menu medarbejderMenu = new Menu(prompt, menuPunkter);
+        int indexValgt = medarbejderMenu.Kør();
+
+        switch (indexValgt)
+        {
+            case 0:
+                if (loggedIn)
+                {
+                    MedarbejderLogud();
+                    break;
+                }
+                else
+                {
+                    LoginMenu();
+                }
+                break;
+            case 1:
+                if (loggedIn)
+                {
+                    MedarbejderManager.Instance.VisMedarbejdere();
+                    MedarbejderManager.Instance.TilføjNyMedarbejder();
+                    Thread.Sleep(2000);
+                    KørMedarbejderMenu();
+                }
+                else
+                {
+                    Console.WriteLine("Du er ikke logged ind!");
+                    Thread.Sleep(2000);
+                    KørMedarbejderMenu();
+                }
+                break;
+            case 2:
+                KørStartMenu();
+                break;
+        }
+    }
+
+    private void LoginMenu()
     {
         Console.WriteLine("Indtast adgangskode:");
         string kode = Console.ReadLine();
@@ -184,19 +215,25 @@ class GenspilManagementSystem
         {
             loggedIn = true;
             Console.WriteLine("Login succesfuldt!");
+            Thread.Sleep(2000);
+            KørStartMenu();
         }
         else
         {
             Console.WriteLine("Forkert adgangskode!");
+            Thread.Sleep(1000);
+            KørMedarbejderMenu();
         }
     }
-    public void MedarbejderLogud()
+    private void MedarbejderLogud()
     {
         loggedIn = false;
         Console.WriteLine("Logget ud!");
+        Thread.Sleep(2000);
+        KørStartMenu();
     }
 
-    public void KørForespoergselMenu()
+    private void KørForespoergselMenu()
     {
         string prompt = "--- Forespørgsler ---\n";
         string[] menuPunkter = { "Tilføj forespørgsel", "Vis forespørgsler", "Rediger/Slet forespørgsel", "Tilbage" };
@@ -234,16 +271,6 @@ class GenspilManagementSystem
     private void TilføjForespørgsel()
     {
         Console.WriteLine("--- Tilføj En Forespørgsel --- \n\n");
-        Console.Write("Indtast dato for forespørgsel (dd-mm-yyyy): ");
-        string inputDato = Console.ReadLine();
-        DateTime dato;
-
-        while (!DateTime.TryParse(inputDato, out dato))
-        {
-            Console.WriteLine("Ugyldig dato. Prøv igen.");
-            inputDato = Console.ReadLine();
-        }
-
         Console.Write("Indtast ønsket spil: ");
         string spilNavn = Console.ReadLine();
         Console.Write("Indtast kundens navn: ");
@@ -255,18 +282,17 @@ class GenspilManagementSystem
         Console.Write("Indtast kundens email: ");
         string kundeEmail = Console.ReadLine();
         Console.Write("Indtast status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
-
-        var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
-
         if (!int.TryParse(Console.ReadLine(), out int statusNum) || !Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
         {
             Console.WriteLine("Ugyldig status. Prøv igen.");
             statusNum = (int)ForespoergselsStatus.Afventer;
         }
-
         ForespoergselsStatus status = (ForespoergselsStatus)statusNum;
 
         int forespørgselsNr = GenererForespoergselsnummer();
+        DateTime dato = DateTime.Now;
+
+        var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
         Forespoergsel forespørgsel = new Forespoergsel(forespørgselsNr, dato, spilNavn, status, kunde);
         forespoergsler.Add(forespørgsel);
 
@@ -285,7 +311,7 @@ class GenspilManagementSystem
             foreach (var forespørgsel in forespoergsler)
             {
                 Console.WriteLine($"Forespørgsel: {forespørgsel.ForespoergselNr}");
-                Console.WriteLine($"Dato: {forespørgsel.Dato:dd-MM-yyyy}");
+                Console.WriteLine($"Dato: {forespørgsel.Dato.ToShortDateString()}");
                 Console.WriteLine($"Spil: {forespørgsel.SpilNavn}");
                 Console.WriteLine($"Kunde: {forespørgsel.Kunde.Navn}");
                 Console.WriteLine($"Status: {forespørgsel.Status}");
@@ -310,7 +336,7 @@ class GenspilManagementSystem
 
             string prompt = "--- Rediger/Slet Forespørgsel ---\n \n" +
                 $"Rediger forespørgselsnr: {forespørgsel.ForespoergselNr}\n" +
-                $"Dato: {forespørgsel.Dato:dd-MM-yyyy}\n" + 
+                $"Dato: {forespørgsel.Dato.ToShortDateString()}\n" + 
                 $"Spil: {forespørgsel.SpilNavn}\n" +
                 $"Kunde: {forespørgsel.Kunde.Navn}\n" +
                 $"Telefon: {forespørgsel.Kunde.TlfNr}\n" +
@@ -366,7 +392,7 @@ class GenspilManagementSystem
         else
         {
             Console.WriteLine($"Rediger forespørgsel: {forespørgsel.ForespoergselNr}");
-            Console.WriteLine($"Dato: {forespørgsel.Dato:dd-MM-yyyy}");
+            Console.WriteLine($"Dato: {forespørgsel.Dato.ToShortDateString()}");
             Console.WriteLine($"Spil: {forespørgsel.SpilNavn}");
             Console.WriteLine($"Kunde: {forespørgsel.Kunde.Navn}");
             Console.WriteLine($"Telefon: {forespørgsel.Kunde.TlfNr}");
@@ -388,7 +414,7 @@ class GenspilManagementSystem
             }
         }
     }
-    public void KørReservationMenu()
+    private void KørReservationMenu()
     {
         string prompt = "--- Reservationer ---\n";
         string[] menuPunkter = { "Tilføj reservation", "Vis reservationer", "Rediger/Slet reservation", "Tilbage" };
@@ -453,7 +479,9 @@ class GenspilManagementSystem
         string kundeEmail = Console.ReadLine();
         var kunde = kundeManager.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
 
-        Reservation reservation = new Reservation(afhentningsNr, reservationsDato, afhentningsDato, kunde, braetspil, status);
+        Medarbejder medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
+
+        Reservation reservation = new Reservation(afhentningsNr, reservationsDato, afhentningsDato, kunde, braetspil, status, medarbejder);
         reservationer.Add(reservation);
         Console.WriteLine("Reservationen er oprettet!");
     }

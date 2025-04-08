@@ -14,7 +14,6 @@ internal enum SpilStand
     Okay = 3,
     Repareres = 4
 }
-
 class Braetspil
 {
     public string Navn { get; set; }
@@ -36,16 +35,11 @@ class Braetspil
         Status = lagerstatus;
     }
 }
-
-// Brug enum til lagerstand :)
-// Brug enum til stand på brætspil
-// Søgefunktion måske contain??
 internal class BraetspilManager
 {
     private static BraetspilManager _instance;
     private List<Braetspil> lager = new List<Braetspil>();
     private bool _defaultGamesAdded = false;
-
 
     public static BraetspilManager Instance
     {
@@ -129,8 +123,6 @@ internal class BraetspilManager
         lager.Add(spil);
         Console.WriteLine("Spil tilføjet til lager!");
     }
-
-
     public void FjernSpil(string navn)
     {
         var spil = lager.Find(s => s.Navn == navn);
@@ -203,8 +195,6 @@ internal class BraetspilManager
         }
         Console.ResetColor();
     }
-
-
     public List<Braetspil> HentLager()
         {
             return lager;
