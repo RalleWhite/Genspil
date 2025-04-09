@@ -9,7 +9,7 @@ class GenspilManagementSystem
 
     public void Kør()
     {
-        loadAll();
+        JSONHelper.LoadAll();
         KørHovedMenu();
         Console.ReadKey(true);
     }
@@ -102,7 +102,7 @@ class GenspilManagementSystem
                 break;
             case 5:
                 Console.WriteLine("\nProgrammet afsluttes...");
-                saveAll();
+                JSONHelper.SaveAll();
                 Thread.Sleep(1000);
                 Environment.Exit(0);
                 break;
@@ -127,7 +127,7 @@ class GenspilManagementSystem
     }
     private void KørLagerMenu()
     {
-        saveAll();
+        JSONHelper.SaveAll();
         string prompt = "--- Lager ---\n";
         string[] menuPunkter = { "Tilføj spil", "Opdater spil", "Fjern spil", "Vis lager", "Søg i lager", "Tilbage" };
         Menu lagerMenu = new Menu(prompt, menuPunkter);
@@ -173,7 +173,7 @@ class GenspilManagementSystem
 
     private void KørMedarbejderMenu()
     {
-        saveAll();
+        JSONHelper.SaveAll();
         string prompt = "--- MedarbejderLogin ---\n";
         string[] menuPunkter = { "Login/Logud", "Tilføj medarbejder", "Tilbage" };
         Menu medarbejderMenu = new Menu(prompt, menuPunkter);
@@ -241,7 +241,7 @@ class GenspilManagementSystem
 
     private void KørForespoergselMenu()
     {
-        saveAll();
+        JSONHelper.SaveAll();
         string prompt = "--- Forespørgsler ---\n";
         string[] menuPunkter = { "Tilføj forespørgsel", "Vis forespørgsler", "Opdater/Slet forespørgsel", "Tilbage" };
         Menu forespørgslerMenu = new Menu(prompt, menuPunkter);
@@ -330,7 +330,7 @@ class GenspilManagementSystem
     }
     private void KørReservationMenu()
     {
-        saveAll();
+        JSONHelper.SaveAll();
         string prompt = "--- Reservationer ---\n";
         string[] menuPunkter = { "Tilføj reservation", "Vis reservationer", "Opdater/Slet reservation", "Tilbage" };
         Menu reservationerMenu = new Menu(prompt, menuPunkter);
@@ -420,7 +420,7 @@ class GenspilManagementSystem
 
     private void KørKundeMenu()
     {
-        saveAll();
+        JSONHelper.SaveAll();
         string prompt = "--- Kundedata ---\n\n";
         string[] menuPunkter = { "Opret kunde", "Find kunde", "Opdater kunde", "Slet kunde", "Vis alle kunder", "Tilbage"};
         Menu kundeMenu = new Menu(prompt, menuPunkter);
@@ -456,7 +456,7 @@ class GenspilManagementSystem
                 KørKundeMenu();
                 break;
 
-            case 2:
+            case 2: // Evt. lav opdateringsprocess det samme som braetspils update
                 Console.Write("Indtast kundeNr.: ");
                 if (int.TryParse(Console.ReadLine(), out int opdaterId))
                 {
@@ -495,25 +495,5 @@ class GenspilManagementSystem
                 break;
 
         }
-    }
-
-    private static void loadAll()
-    {
-        BraetspilManager.Instance.LoadJSON();
-        KundeManager.Instance.LoadJSON();
-        ForespoergselManager.Instance.LoadJSON();
-        MedarbejderManager.Instance.LoadJSON();
-        ReservationManager.Instance.LoadJSON();
-
-    }
-    private static void saveAll()
-    {
-        BraetspilManager.Instance.SaveJSON();
-        KundeManager.Instance.SaveJSON();
-        ForespoergselManager.Instance.SaveJSON();
-        MedarbejderManager.Instance.SaveJSON();
-        ReservationManager.Instance.SaveJSON();
-
-
     }
 }

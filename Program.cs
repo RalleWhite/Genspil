@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+// Koden til login er "1"
 
 namespace Genspil
 {
@@ -9,8 +10,6 @@ namespace Genspil
     {
         static void Main(string[] args)
         {
-            BraetspilManager.Instance.TilfoejDefaultSpil();
-            MedarbejderManager.Instance.TilfoejDefaultMedarbejdere();
             GenspilManagementSystem Genspil = new GenspilManagementSystem();
             Genspil.Kør();
         }
