@@ -26,6 +26,7 @@ internal class Forespoergsel
         Kunde = kunde;
         Medarbejder = medarbejder;
     }
+    public Forespoergsel() { }
 }
 
 
@@ -213,6 +214,19 @@ internal class ForespoergselManager
                 Console.WriteLine("Forespørgslen blev ikke slettet.");
             }
         }
+    }
+
+    public void LoadJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        forespoergsler = data.Forespoergsler ?? new List<Forespoergsel>();
+    }
+
+    public void SaveJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        data.Forespoergsler = forespoergsler;
+        JSONHelper.SaveAppData(data);
     }
 
 }

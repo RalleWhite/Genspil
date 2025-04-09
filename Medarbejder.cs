@@ -11,6 +11,7 @@ internal class Medarbejder
         Navn = navn;
         Brugernavn = brugernavn;
     }
+    public Medarbejder() { }
 }
 
 internal class MedarbejderManager
@@ -119,6 +120,19 @@ internal class MedarbejderManager
     public int GetMedarbejderCount()
     {
         return medarbejdere.Count;
+    }
+
+    public void LoadJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        medarbejdere = data.Medarbejdere ?? new List<Medarbejder>();
+    }
+
+    public void SaveJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        data.Medarbejdere = medarbejdere;
+        JSONHelper.SaveAppData(data);
     }
 }
 

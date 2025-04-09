@@ -35,6 +35,7 @@ class Braetspil
         Stand = stand;
         Status = lagerstatus;
     }
+    public Braetspil() { }
 }
 internal class BraetspilManager
 {
@@ -405,4 +406,16 @@ internal class BraetspilManager
         return lager.Count;
     }
 
+    public void LoadJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        lager = data.Lager ?? new List<Braetspil>();
+    }
+
+    public void SaveJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        data.Lager = lager;
+        JSONHelper.SaveAppData(data);
+    }
 }

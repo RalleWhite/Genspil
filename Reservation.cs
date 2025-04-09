@@ -30,7 +30,8 @@ internal class Reservation
         Braetspil = braetspil;
         Status = status;
         Medarbejder = medarbejder;
-    } 
+    }
+    public Reservation() { }
 }
 
 internal class ReservationManager
@@ -222,6 +223,18 @@ internal class ReservationManager
                 Console.WriteLine("Reservationen blev ikke slettet.");
             }
         }
+    }
+    public void LoadJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        reservationer = data.Reservationer ?? new List<Reservation>();
+    }
+
+    public void SaveJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        data.Reservationer = reservationer;
+        JSONHelper.SaveAppData(data);
     }
 }
   
