@@ -49,7 +49,6 @@ public class Menu
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             tastInput = keyInfo.Key;
 
-            //Opdaterer _indexValgt baseret på piletaster
             if (tastInput == ConsoleKey.UpArrow)
             {
                 _indexValgt--;

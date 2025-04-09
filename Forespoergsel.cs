@@ -46,17 +46,53 @@ internal class ForespoergselManager
     }
     public Forespoergsel OpretNyForespoergsel()
     {
-        Console.Write("Indtast ønsket spil: ");
-        string spilNavn = Console.ReadLine();
-        Console.Write("Indtast kundens navn: ");
-        string kundeNavn = Console.ReadLine();
-        Console.Write("Indtast kundens telefonnummer: ");
-        string kundeTelefon = Console.ReadLine();
-        Console.Write("Indtast kundens adresse: ");
-        string kundeAdresse = Console.ReadLine();
-        Console.Write("Indtast kundens email: ");
-        string kundeEmail = Console.ReadLine();
-        var kunde = KundeManager.Instance.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
+        Console.WriteLine("Vil du: 1. Vælge eksisterende spil, 2. Oprette nyt spil?");
+        string spilValg = Console.ReadLine();
+        string spilNavn = null;
+
+        if (BraetspilManager.Instance.GetBraetspilCount() == 0 || spilValg == "2")
+        {
+            Braetspil nytSpil = BraetspilManager.Instance.OpretNytSpil();
+            BraetspilManager.Instance.TilfoejSpil(nytSpil);
+            spilNavn = nytSpil.Navn;
+        }
+        else if (spilValg == "1")
+        {
+            int index = BraetspilManager.Instance.VaelgBraetspil();
+            Braetspil valgtSpil = BraetspilManager.Instance.HentBraetspil(index);
+            spilNavn = valgtSpil.Navn;
+        }
+        else
+        {
+            Console.WriteLine("Ugyldigt valg. Der vælges ingen spil.");
+        }
+
+
+        Console.WriteLine("Vil du: 1. Vælge eksisterende kunde, 2. Oprette ny kunde?");
+        string kundeValg = Console.ReadLine();
+        Kunde kunde = null;
+
+        if (KundeManager.Instance.GetCustomerCount() == 0 || kundeValg == "2")
+        {
+            Console.Write("Indtast kundens navn: ");
+            string kundeNavn = Console.ReadLine();
+            Console.Write("Indtast kundens telefonnummer: ");
+            string kundeTelefon = Console.ReadLine();
+            Console.Write("Indtast kundens adresse: ");
+            string kundeAdresse = Console.ReadLine();
+            Console.Write("Indtast kundens email: ");
+            string kundeEmail = Console.ReadLine();
+            kunde = KundeManager.Instance.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
+        }
+        else if (kundeValg == "1")
+        {
+            int index = KundeManager.Instance.VaelgKunde();
+            kunde = KundeManager.Instance.HentKunde(index);
+        }
+        else
+        {
+            Console.WriteLine("Ugyldigt valg. Der vælges ingen kunde.");
+        }
 
         Console.Write("Indtast status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
         if (!int.TryParse(Console.ReadLine(), out int statusNum) || !Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
@@ -69,11 +105,28 @@ internal class ForespoergselManager
         int forespoergselsNr = GenererForespoergselsnummer();
         DateTime dato = DateTime.Now;
 
-        Medarbejder medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
+        Console.WriteLine("Vil du: 1. Vælge eksisterende medarbejder, 2. Oprette ny medarbejder?");
+        string medarbejderValg = Console.ReadLine();
+        Medarbejder medarbejder = null;
+
+        if (MedarbejderManager.Instance.GetMedarbejderCount() == 0 || medarbejderValg == "2")
+        {
+            medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
+        }
+        else if (medarbejderValg == "1")
+        {
+            int index = MedarbejderManager.Instance.VaelgMedarbejder();
+            medarbejder = MedarbejderManager.Instance.HentMedarbejder(index);
+        }
+        else
+        {
+            Console.WriteLine("Ugyldigt valg. Der vælges ingen medarbejder.");
+        }
 
         Forespoergsel forespoergsel = new Forespoergsel(forespoergselsNr, dato, spilNavn, status, kunde, medarbejder);
         return forespoergsel;
     }
+
 
     public void TilfoejForespoergsel(Forespoergsel forespoergsel)
     {

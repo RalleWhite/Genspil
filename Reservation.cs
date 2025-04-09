@@ -48,7 +48,6 @@ internal class ReservationManager
             return _instance;
         }
     }
-
     public Reservation OpretNyReservation()
     {
         Console.Write("Indtast dato for afhentning (dd-mm-åååå): ");
@@ -63,27 +62,71 @@ internal class ReservationManager
 
         int afhentningsNr = GenererAfhentningsNr();
         DateTime reservationsDato = DateTime.Now;
+
         Console.Write("Indtast status (1. Oprettet | 2. Klar | 3. Afhentet | 4. Annulleret): \n");
         ReservationStatus status = (ReservationStatus)int.Parse(Console.ReadLine());
 
-        Braetspil braetspil = BraetspilManager.Instance.OpretNytSpil();
-        BraetspilManager.Instance.TilfoejSpil(braetspil);
+        Console.WriteLine("Vil du: 1. Vælge eksisterende brætspil, 2. Oprette nyt brætspil?");
+        string braetspilValg = Console.ReadLine();
+        Braetspil braetspil = null;
 
-        Console.Write("Indtast kundens navn: ");
-        string kundeNavn = Console.ReadLine();
-        Console.Write("Indtast kundens telefonnummer: ");
-        string kundeTelefon = Console.ReadLine();
-        Console.Write("Indtast kundens adresse: ");
-        string kundeAdresse = Console.ReadLine();
-        Console.Write("Indtast kundens email: ");
-        string kundeEmail = Console.ReadLine();
-        var kunde = KundeManager.Instance.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
+        if (BraetspilManager.Instance.GetBraetspilCount() == 0 || braetspilValg == "2")
+        {
+            braetspil = BraetspilManager.Instance.OpretNytSpil();
+            BraetspilManager.Instance.TilfoejSpil(braetspil);
+        }
+        else if (braetspilValg == "1")
+        {
+            int index = BraetspilManager.Instance.VaelgBraetspil();
+            braetspil = BraetspilManager.Instance.HentBraetspil(index);
+        }
+        else
+        {
+            Console.WriteLine("Ugyldigt valg. Der vælges ingen brætspil.");
+        }
 
-        Medarbejder medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
+        Console.WriteLine("Vil du: 1. Vælge eksisterende kunde, 2. Oprette ny kunde?");
+        string kundeValg = Console.ReadLine();
+        Kunde kunde = null;
+
+        if (KundeManager.Instance.GetCustomerCount() == 0 || kundeValg == "2")
+        {
+            var (navn, email, adresse, tlfNr) = KundeManager.Instance.OpretNyKunde();
+            kunde = KundeManager.Instance.OpretKunde(navn, email, adresse, tlfNr);
+        }
+        else if (kundeValg == "1")
+        {
+            int index = KundeManager.Instance.VaelgKunde();
+            kunde = KundeManager.Instance.HentKunde(index);
+        }
+        else
+        {
+            Console.WriteLine("Ugyldigt valg. Der vælges ingen kunde.");
+        }
+
+        Console.WriteLine("Vil du: 1. Vælge eksisterende medarbejder, 2. Oprette ny medarbejder?");
+        string medarbejderValg = Console.ReadLine();
+
+        Medarbejder medarbejder = null;
+
+        if (MedarbejderManager.Instance.GetMedarbejderCount() == 0 || medarbejderValg == "2")
+        {
+            medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
+        }
+        else if (medarbejderValg == "1")
+        {
+            int index = MedarbejderManager.Instance.VaelgMedarbejder();
+            medarbejder = MedarbejderManager.Instance.HentMedarbejder(index);
+        }
+        else
+        {
+            Console.WriteLine("Ugyldigt valg. Der vælges ingen medarbejder.");
+        }
 
         Reservation reservation = new Reservation(afhentningsNr, reservationsDato, afhentningsDato, kunde, braetspil, status, medarbejder);
         return reservation;
     }
+
 
     public void TilfoejReservation(Reservation reservation)
     {
@@ -115,6 +158,7 @@ internal class ReservationManager
                 Console.WriteLine($"Spil version: {reservation.Braetspil.Version}");
                 Console.WriteLine($"Kunde: {reservation.Kunde.Navn}");
                 Console.WriteLine($"Status: {reservation.Status}");
+                Console.WriteLine($"Medarbejder: {reservation.Medarbejder?.Navn}");
             }
             Console.WriteLine("\nTryk på enhver knap for at gå tilbage.");
         }
@@ -136,6 +180,7 @@ internal class ReservationManager
             Console.WriteLine($"Spil version: {reservation.Braetspil.Version}");
             Console.WriteLine($"Kunde: {reservation.Kunde.Navn}");
             Console.WriteLine($"Status: {reservation.Status}");
+            Console.WriteLine($"Medarbejder: {reservation.Medarbejder?.Navn}");
             Console.WriteLine("\nTryk på enhver knap for at gå tilbage.");
         }
     }
