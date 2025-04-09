@@ -53,24 +53,21 @@ internal class ReservationManager
         Console.Write("Indtast dato for afhentning (dd-mm-åååå): ");
         string inputDato = Console.ReadLine();
         DateTime afhentningsDato;
-
         while (!DateTime.TryParse(inputDato, out afhentningsDato))
         {
             Console.WriteLine("Ugyldig dato. Prøv igen.");
             inputDato = Console.ReadLine();
         }
-
-        int afhentningsNr = GenererAfhentningsNr();
-        DateTime reservationsDato = DateTime.Now;
-
         Console.Write("Indtast status (1. Oprettet | 2. Klar | 3. Afhentet | 4. Annulleret): \n");
         ReservationStatus status = (ReservationStatus)int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Vil du: 1. Vælge eksisterende brætspil, 2. Oprette nyt brætspil?");
-        string braetspilValg = Console.ReadLine();
+        string promptBræt = "Vil du vælge eksisterende brætspil eller oprette nyt brætspil?";
+        string[] menuPunkt= { "Eksisterende", "Opret nyt" };
+        Menu VælgSpilMenu = new Menu(promptBræt, menuPunkt);
+        int brætspilValg = VælgSpilMenu.Kør();
         Braetspil braetspil = null;
 
-        if (BraetspilManager.Instance.GetBraetspilCount() == 0 || braetspilValg == "2")
+        if (BraetspilManager.Instance.GetBraetspilCount() == 0 || brætspilValg == 1)
         {
             if (BraetspilManager.Instance.GetBraetspilCount() == 0)
             {
@@ -79,21 +76,19 @@ internal class ReservationManager
             braetspil = BraetspilManager.Instance.OpretNytSpil();
             BraetspilManager.Instance.TilfoejSpil(braetspil);
         }
-        else if (braetspilValg == "1")
+        else if (brætspilValg == 0)
         {
             int index = BraetspilManager.Instance.VaelgBraetspil();
             braetspil = BraetspilManager.Instance.HentBraetspil(index);
         }
-        else
-        {
-            Console.WriteLine("Ugyldigt valg. Der vælges ingen brætspil.");
-        }
 
-        Console.WriteLine("Vil du: 1. Vælge eksisterende kunde, 2. Oprette ny kunde?");
-        string kundeValg = Console.ReadLine();
+        string promptKunde = "Vil du vælge eksisterende kunde eller oprette ny kunde?";
+        string[] menuPunkt1 = { "Eksisterende", "Opret ny" };
+        Menu VælgKundeMenu = new Menu(promptKunde, menuPunkt1);
+        int kundeValg = VælgKundeMenu.Kør();
         Kunde kunde = null;
 
-        if (KundeManager.Instance.GetCustomerCount() == 0 || kundeValg == "2")
+        if (KundeManager.Instance.GetCustomerCount() == 0 || kundeValg == 1)
         {
             if (KundeManager.Instance.GetCustomerCount() == 0)
             {
@@ -102,22 +97,18 @@ internal class ReservationManager
             var (navn, email, adresse, tlfNr) = KundeManager.Instance.OpretNyKunde();
             kunde = KundeManager.Instance.OpretKunde(navn, email, adresse, tlfNr);
         }
-        else if (kundeValg == "1")
+        else if (kundeValg == 0)
         {
             int index = KundeManager.Instance.VaelgKunde();
             kunde = KundeManager.Instance.HentKunde(index);
         }
-        else
-        {
-            Console.WriteLine("Ugyldigt valg. Der vælges ingen kunde.");
-        }
 
-        Console.WriteLine("Vil du: 1. Vælge eksisterende medarbejder, 2. Oprette ny medarbejder?");
-        string medarbejderValg = Console.ReadLine();
-
+        string promptMedarbejder = "Vil du vælge eksisterende medarbejder eller oprette ny medarbejder?";
+        Menu VælgMedarbejderMenu = new Menu(promptMedarbejder, menuPunkt1);
+        int medarbejderValg = VælgMedarbejderMenu.Kør();
         Medarbejder medarbejder = null;
 
-        if (MedarbejderManager.Instance.GetMedarbejderCount() == 0 || medarbejderValg == "2")
+        if (MedarbejderManager.Instance.GetMedarbejderCount() == 0 || medarbejderValg == 1)
         {
             if (MedarbejderManager.Instance.GetMedarbejderCount() == 0)
             {
@@ -125,16 +116,14 @@ internal class ReservationManager
             }
             medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
         }
-        else if (medarbejderValg == "1")
+        else if (medarbejderValg == 0)
         {
             int index = MedarbejderManager.Instance.VaelgMedarbejder();
             medarbejder = MedarbejderManager.Instance.HentMedarbejder(index);
         }
-        else
-        {
-            Console.WriteLine("Ugyldigt valg. Der vælges ingen medarbejder.");
-        }
 
+        int afhentningsNr = GenererAfhentningsNr();
+        DateTime reservationsDato = DateTime.Now;
         Reservation reservation = new Reservation(afhentningsNr, reservationsDato, afhentningsDato, kunde, braetspil, status, medarbejder);
         return reservation;
     }
@@ -163,7 +152,7 @@ internal class ReservationManager
         {
             foreach (var reservation in reservationer)
             {
-                Console.WriteLine($"Reservation: {reservation.AfhentningsNr}");
+                Console.WriteLine($"Afhentningsnr: {reservation.AfhentningsNr}");
                 Console.WriteLine($"Reservationsdato: {reservation.ReservationsDato.ToShortDateString()}");
                 Console.WriteLine($"Afhentningsdato: {reservation.AfhentningsDato.ToShortDateString()}");
                 Console.WriteLine($"Spil: {reservation.Braetspil.Navn}");
@@ -185,7 +174,7 @@ internal class ReservationManager
         }
         else
         {
-            Console.WriteLine($"Reservation: {reservation.AfhentningsNr}");
+            Console.WriteLine($"Afhentningsnr: {reservation.AfhentningsNr}");
             Console.WriteLine($"Reservationsdato: {reservation.ReservationsDato.ToShortDateString()}");
             Console.WriteLine($"Afhentningsdato: {reservation.AfhentningsDato.ToShortDateString()}");
             Console.WriteLine($"Spil: {reservation.Braetspil.Navn}");

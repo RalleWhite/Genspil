@@ -4,12 +4,12 @@ using System.Security.Cryptography;
 internal class Medarbejder
 {
     public string Navn {  get; set; }
-    public string BrugerNavn {  get; set; }
+    public string Brugernavn {  get; set; }
 
     public Medarbejder(string navn, string brugernavn)
     {
         Navn = navn;
-        BrugerNavn = brugernavn;
+        Brugernavn = brugernavn;
     }
 }
 
@@ -61,7 +61,7 @@ internal class MedarbejderManager
         }
     }
 
-    public void TilføjNyMedarbejder()
+    public Medarbejder TilføjNyMedarbejder()
     {
         Console.Write("Indtast medarbejder fornavn: ");
         string fornavn = Console.ReadLine();
@@ -74,6 +74,7 @@ internal class MedarbejderManager
         Medarbejder medarbejder = new Medarbejder(navn, brugernavn);
         medarbejdere.Add(medarbejder);
         Console.WriteLine("Medarbejder Oprettet: " + brugernavn);
+        return medarbejder;
     }
 
     public int VaelgMedarbejder()
