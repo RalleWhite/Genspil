@@ -17,6 +17,7 @@ internal class Kunde
         Adresse = adresse;
         TlfNr = tlfNr;
     }
+    public Kunde() { }
 }
 
 internal class KundeManager
@@ -146,5 +147,16 @@ internal class KundeManager
         return kunder.Count;
     }
 
+    public void LoadJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        kunder = data.Kunder ?? new Dictionary<int, Kunde>();
+    }
 
+    public void SaveJSON()
+    {
+        AppData data = JSONHelper.LoadAppData();
+        data.Kunder = kunder;
+        JSONHelper.SaveAppData(data);
+    }
 }
