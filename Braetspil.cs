@@ -293,7 +293,7 @@ internal class BraetspilManager
         var spil = lager.FirstOrDefault(s => s.Navn.Equals(navn, StringComparison.OrdinalIgnoreCase));
         if (spil == null)
         {
-            Console.WriteLine("X Spillet blev ikke fundet.");
+            Console.WriteLine("Spillet blev ikke fundet.");
             return null;
         }
 
@@ -347,11 +347,11 @@ internal class BraetspilManager
                 eksisterende.Stand = spil.Stand;
                 eksisterende.Status = spil.Status;
 
-                Console.WriteLine("✓ Spiloplysninger opdateret!");
+                Console.WriteLine("Spiloplysninger opdateret!");
             }
             else
             {
-                Console.WriteLine("X Spillet blev ikke fundet.");
+                Console.WriteLine("Spillet blev ikke fundet.");
             }
         }
     }

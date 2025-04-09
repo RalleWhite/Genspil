@@ -72,6 +72,10 @@ internal class ReservationManager
 
         if (BraetspilManager.Instance.GetBraetspilCount() == 0 || braetspilValg == "2")
         {
+            if (BraetspilManager.Instance.GetBraetspilCount() == 0)
+            {
+                Console.WriteLine("Ingen eksisterende brætspil, venligst opret et ny.");
+            }
             braetspil = BraetspilManager.Instance.OpretNytSpil();
             BraetspilManager.Instance.TilfoejSpil(braetspil);
         }
@@ -91,6 +95,10 @@ internal class ReservationManager
 
         if (KundeManager.Instance.GetCustomerCount() == 0 || kundeValg == "2")
         {
+            if (KundeManager.Instance.GetCustomerCount() == 0)
+            {
+                Console.WriteLine("Ingen eksisterende kunder, venligst opret en ny.");
+            }
             var (navn, email, adresse, tlfNr) = KundeManager.Instance.OpretNyKunde();
             kunde = KundeManager.Instance.OpretKunde(navn, email, adresse, tlfNr);
         }
@@ -111,6 +119,10 @@ internal class ReservationManager
 
         if (MedarbejderManager.Instance.GetMedarbejderCount() == 0 || medarbejderValg == "2")
         {
+            if (MedarbejderManager.Instance.GetMedarbejderCount() == 0)
+            {
+                Console.WriteLine("Ingen eksisterende medarbejdere, venligst opret en ny.");
+            }
             medarbejder = MedarbejderManager.Instance.TilføjNyMedarbejder();
         }
         else if (medarbejderValg == "1")
