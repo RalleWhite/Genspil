@@ -96,25 +96,25 @@ internal class BraetspilManager
 
         Random random = new Random();
 
-        var gamesData = new List<(string Name, string Version, SpilStand stand, double Price, string Genre, string PlayerCount)>
+        var gamesData = new List<(string Name, string Version, double Price, string Genre, string PlayerCount)>
             {
-                ("Catan", "Edition 1", (SpilStand)1, 350, "Strategi", "3-4"),
-                ("Monopoly", "Edition 2", (SpilStand)1, 300, "Familie", "2-6"),
-                ("Ticket to Ride", "Anniversary",(SpilStand)1, 400, "Strategi", "2-5"),
-                ("Risk", "Edition 1", (SpilStand)3, 350, "Strategi", "2-6"),
-                ("Pandemic", "Deluxe", (SpilStand)2, 300, "Samarbejde", "2-4"),
-                ("Carcassonne", "Deluxe", (SpilStand)2, 250, "Strategi", "2-5"),
-                ("Clue", "Classic", (SpilStand)1, 200, "Familie", "3-6"),
-                ("Chess", "Standard", (SpilStand)0, 100, "Strategi", "2"),
-                ("Scrabble", "Deluxe", (SpilStand)3, 250, "Ord", "2-4"),
-                ("Battleship", "Classic",(SpilStand)2, 150, "Strategi", "2")
+                ("Ticket to Ride", "First Journey", 99, "Familiespil", "2-4"),
+                ("Ticket to Ride", "Berlin", 99, "Familiespil", "2-4"),
+                ("7 Wonders", "2nd edition - dansk", 99, "Strategispil", "3-7"),
+                ("7 Wonders", "Architects - dansk", 99, "Strategispil", "3-7"),
+                ("Alverdens", "Original", 99, "Quiz spil", "2- "),
+                ("A la Carte", "Dessert", 99, "Familiespil", "2-4"),
+                ("Bad People", "Original", 99, "Selskabsspil", "3 -"),
+                ("Sequence", "Junior", 99, "Strategispil", "2-12"),
+                ("Sequence", "Rejsespil", 99, "Strategispil", "2-12"),
             };
 
         foreach (var gameData in gamesData)
         {
             Lagerstatus lagerstatus = (Lagerstatus)random.Next(0, 3);
+            SpilStand spilStand = (SpilStand)random.Next(0, 4);
 
-            Braetspil game = new Braetspil(gameData.Name, gameData.Version, gameData.Price, gameData.Genre, gameData.PlayerCount, gameData.stand, lagerstatus);
+            Braetspil game = new Braetspil(gameData.Name, gameData.Version, gameData.Price, gameData.Genre, gameData.PlayerCount, spilStand, lagerstatus);
             lager.Add(game);
         }
     }
@@ -198,7 +198,7 @@ internal class BraetspilManager
         string navn = Console.ReadLine();
         Console.Write("Indtast version: ");
         string version = Console.ReadLine();
-        Console.Write("Indtast stand (0 = Ingen, 1 = Fremragende, 3 = God, 4 = Okay): \n");
+        Console.Write("Indtast stand (0 = Ingen, 1 = Fremragende, 3 = God, 4 = Okay): ");
         SpilStand stand = (SpilStand)int.Parse(Console.ReadLine());
         Console.Write("Indtast pris: ");
         double pris = Convert.ToDouble(Console.ReadLine());
@@ -218,9 +218,9 @@ internal class BraetspilManager
     {
         foreach (var spil in BraetspilManager.Instance.HentLager())
         {
-            Console.WriteLine(spil.Navn);
+            Console.WriteLine($"{spil.Navn}, {spil.Version}, {spil.Stand}, {spil.Pris} kr, {spil.Genre}, {spil.AntalSpillere} ({spil.Status})");
         }
-        Console.WriteLine("Indtast navn på spil der skal fjernes:");
+        Console.Write("\nIndtast navn på spil der skal fjernes: ");
         string spilNavn = Console.ReadLine();
         BraetspilManager.Instance.FjernSpil(spilNavn);
     }
@@ -242,10 +242,10 @@ internal class BraetspilManager
         string standInput = Console.ReadLine();
         SpilStand? stand = null;
 
-        Console.WriteLine("Indtast antal spillere (eller tryk Enter for at springe over): ");
+        Console.Write("Indtast antal spillere (eller tryk Enter for at springe over): ");
         string searchAntalSpillere = Console.ReadLine();
 
-        Console.WriteLine("Indtast lagerstatus (1 = PåLager, 2 = BestiltHjem, 3 = Udgået, eller tryk Enter for at springe over): ");
+        Console.Write("Indtast lagerstatus (1 = PåLager, 2 = BestiltHjem, 3 = Udgået, eller tryk Enter for at springe over): ");
         string statusInput = Console.ReadLine();
         Lagerstatus? status = null;
 
@@ -404,5 +404,4 @@ internal class BraetspilManager
     {
         return lager.Count;
     }
-
 }

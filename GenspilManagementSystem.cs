@@ -37,7 +37,7 @@ class GenspilManagementSystem
     private void KørStartMenu()
     {
         string prompt = "--- Genspil Management System ---\n";
-        string[] menuPunkter = { "Lagerstatus", "Reservationer", "Forespørgsler", "Kundedata", "Butikslogin", "Afslut" };
+        string[] menuPunkter = { "Lager", "Reservationer", "Forespørgsler", "Kundedata", "Butikslogin", "Afslut" };
         Menu startMenu = new Menu(prompt, menuPunkter);
         int indexValgt = startMenu.Kør();
 
@@ -116,7 +116,7 @@ class GenspilManagementSystem
     private void VisOmGMS()
     {
         Console.Clear();
-        Console.WriteLine("Dette C# projekt er lavet af UCL-studerende Anders Vincent Danielsen, Cecilia Mølgaard Hafezan, Ilham Abbas Hashi, Rasmus Malmberg Christensen og Yousof Mohamed Fathi Ibrahim.");
+        Console.WriteLine("Dette C# projekt er lavet af UCL-studerende: Anders Vincent Danielsen, Cecilia Mølgaard Hafezan, Ilham Abbas Hashi, Rasmus Malmberg Christensen og Yousof Mohamed Fathi Ibrahim.");
         Console.WriteLine("Dato: 09-04-2025");
         Console.WriteLine("\n \nTryk på enhver tast for at vende tilbage til hovedmenuen.");
         Console.ReadKey(true);
@@ -169,7 +169,7 @@ class GenspilManagementSystem
 
     private void KørMedarbejderMenu()
     {
-        string prompt = "--- MedarbejderLogin ---\n";
+        string prompt = "--- Butikslogin ---\n";
         string[] menuPunkter = { "Login/Logud", "Tilføj medarbejder", "Tilbage" };
         Menu medarbejderMenu = new Menu(prompt, menuPunkter);
         int indexValgt = medarbejderMenu.Kør();
@@ -210,7 +210,7 @@ class GenspilManagementSystem
 
     private void LoginMenu()
     {
-        Console.WriteLine("Indtast adgangskode:");
+        Console.Write("Indtast adgangskode: ");
         string kode = Console.ReadLine();
         if (kode == "1")
         {
@@ -266,12 +266,12 @@ class GenspilManagementSystem
 
     private void RedSletForespoergselMenu()
     {
-        string prompt = "--- Rediger/Slet Forespørgsel ---\n \n";
+        string prompt = "--- Rediger/Slet Forespørgsel ---\n";
         string[] menuPunkter = { "Rediger forespørgsel", "Slet forespørgsel", "Tilbage" };
         Menu redSletForespoergselMenu = new Menu(prompt, menuPunkter);
         int indexValgt = redSletForespoergselMenu.Kør();
 
-        Console.WriteLine("Indtast forespørgselsnummer:");
+        Console.WriteLine("Indtast forespørgselsnummer: ");
         if (int.TryParse(Console.ReadLine(), out int forespørgselsNr))
         {
             var forespørgsel = ForespoergselManager.forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNr);
@@ -339,12 +339,12 @@ class GenspilManagementSystem
 
     private void RedSletReservationMenu()
     {
-        string prompt = "--- Rediger/Slet Reservation ---\n \n";
+        string prompt = "--- Rediger/Slet Reservation ---\n";
         string[] menuPunkter = {"Rediger reservation", "Slet reservation", "Tilbage"};
         Menu redSletReservationMenu = new Menu(prompt, menuPunkter);
         int indexValgt = redSletReservationMenu.Kør();
 
-        Console.WriteLine("Indtast afhentningsnr.:");
+        Console.Write("Indtast afhentningsnr.: ");
         if (int.TryParse(Console.ReadLine(), out int afhentningsNr))
         {
             var reservation = ReservationManager.reservationer.Find(f => f.AfhentningsNr == afhentningsNr);
@@ -382,7 +382,7 @@ class GenspilManagementSystem
 
     private void KørKundeMenu()
     {
-        string prompt = "--- Kundedata ---\n\n";
+        string prompt = "--- Kundedata ---\n";
         string[] menuPunkter = { "Opret kunde", "Find kunde", "Opdater kunde", "Slet kunde", "Vis alle kunder", "Tilbage"};
         Menu kundeMenu = new Menu(prompt, menuPunkter);
         int indexValgt = kundeMenu.Kør();
@@ -399,7 +399,7 @@ class GenspilManagementSystem
                 Console.Write("Indtast kundens email: ");
                 string kundeEmail = Console.ReadLine();
                 KundeManager.Instance.OpretKunde(kundeNavn, kundeEmail, kundeAdresse, kundeTelefon);
-                Console.ReadKey();
+                Thread.Sleep(2000);
                 KørKundeMenu();
                 break;
 
@@ -431,7 +431,7 @@ class GenspilManagementSystem
                     string nyTlfNr = Console.ReadLine();
                     KundeManager.Instance.OpdaterKunde(opdaterId, nytNavn, nyEmail, nyAdresse, nyTlfNr);
                 }
-                Console.ReadKey();
+                Thread.Sleep(2000);
                 KørKundeMenu();
                 break;
 
@@ -441,7 +441,7 @@ class GenspilManagementSystem
                 {
                     KundeManager.Instance.SletKunde(sletId);
                 }
-                Console.ReadKey();
+                Thread.Sleep(2000);
                 KørKundeMenu();
                 break;
 

@@ -63,7 +63,7 @@ internal class MedarbejderManager
 
     public Medarbejder TilføjNyMedarbejder()
     {
-        Console.Write("Indtast medarbejder fornavn: ");
+        Console.Write("\nIndtast medarbejder fornavn: ");
         string fornavn = Console.ReadLine();
         Console.Write("Indtast medarbejder efternavn: ");
         string efternavn = Console.ReadLine();
@@ -106,7 +106,6 @@ internal class MedarbejderManager
 
         return index;
     }
-
 
     public Medarbejder HentMedarbejder(int index)
     {

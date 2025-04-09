@@ -35,6 +35,7 @@ public class Menu
             }
             Console.WriteLine($"{prefix} << {valgtMenuPunkt} >>");
         }
+        Console.WriteLine();
         Console.ResetColor();
     }
 

@@ -149,8 +149,7 @@ internal class ForespoergselManager
             Console.WriteLine("\nTryk på enhver knap for at gå tilbage.");
         }
     }
-
-    public void VisForespoergsel(Forespoergsel forespoergsel)
+        public void VisForespoergsel(Forespoergsel forespoergsel)
     {
         if (forespoergsler.Count == 0)
         {
