@@ -14,12 +14,12 @@ public enum ReservationStatus
 internal class Reservation
 {
     public int AfhentningsNr { get; set; }
-    public DateTime ReservationsDato { get; set; }
     public DateTime AfhentningsDato { get; set; }
+    public DateTime ReservationsDato { get; set; }
+    public ReservationStatus Status;
     public Kunde Kunde { get; set; }
     public Braetspil Braetspil { get; set; }
     public Medarbejder Medarbejder { get; set; }
-    public ReservationStatus Status;
 
     public Reservation(int afhentningsNr, DateTime reservationsDato, DateTime afhentningsDato, Kunde kunde, Braetspil braetspil, ReservationStatus status, Medarbejder medarbejder)
     {

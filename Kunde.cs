@@ -8,8 +8,6 @@ internal class Kunde
     public string Email { get; set; }
     public string Adresse { get; set; }
     public string TlfNr { get; set; }
-    public List<int> Ordrer { get; set; } = new List<int>();
-    public List<int> Ønskeliste { get; set; } = new List<int>();
 
     public Kunde(int kundeId, string navn, string email, string adresse, string tlfNr)
     {

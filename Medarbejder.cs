@@ -4,12 +4,12 @@ using System.Security.Cryptography;
 internal class Medarbejder
 {
     public string Navn {  get; set; }
-    public string Brugernavn {  get; set; }
+    public string BrugerNavn {  get; set; }
 
     public Medarbejder(string navn, string brugernavn)
     {
         Navn = navn;
-        Brugernavn = brugernavn;
+        BrugerNavn = brugernavn;
     }
 }
 
@@ -32,17 +32,12 @@ internal class MedarbejderManager
     public void TilfoejDefaultMedarbejdere()
     {
         if (_defaultemployeesAdded) return;
-        string jamal = "jamu01";
-        string jonas = "jona02";
-        string emilie = "empe03";
-
         var medarbejdereData = new List<(string Navn, string Brugernavn)>
             {
-                ("Jonas Nielsen", jonas),
-                ("Jamal Mohammed", jamal),
-                ("Emilie Petersen",emilie)
+                ("Jonas Nielsen", "joni01"),
+                ("Jamal Muhammed", "jamu02"),
+                ("Emilie Petersen","empe03")
             };
-
         foreach (var medarbejderData in medarbejdereData)
         {
             Medarbejder medarbejder = new Medarbejder(medarbejderData.Navn, medarbejderData.Brugernavn);
@@ -60,12 +55,12 @@ internal class MedarbejderManager
         Console.WriteLine("\nMedarbejdere:\n");
         foreach (var medarbejder in medarbejdere)
         {
-            Console.WriteLine($"Navn: {medarbejder.Navn}, Brugernavn: {medarbejder.Brugernavn}");
+            Console.WriteLine($"Navn: {medarbejder.Navn}, Brugernavn: {medarbejder.BrugerNavn}");
         }
         Console.ResetColor();
     }
 
-    public Medarbejder TilføjNyMedarbejder()
+    public void TilføjNyMedarbejder()
     {
         Console.Write("Indtast medarbejder fornavn: ");
         string fornavn = Console.ReadLine();
@@ -78,8 +73,6 @@ internal class MedarbejderManager
         Medarbejder medarbejder = new Medarbejder(navn, brugernavn);
         medarbejdere.Add(medarbejder);
         Console.WriteLine("Medarbejder Oprettet: " + brugernavn);
-
-        return medarbejder;
     }
 }
 
