@@ -243,7 +243,7 @@ class GenspilManagementSystem
     {
         saveAll();
         string prompt = "--- Forespørgsler ---\n";
-        string[] menuPunkter = { "Tilføj forespørgsel", "Vis forespørgsler", "Rediger/Slet forespørgsel", "Tilbage" };
+        string[] menuPunkter = { "Tilføj forespørgsel", "Vis forespørgsler", "Opdater/Slet forespørgsel", "Tilbage" };
         Menu forespørgslerMenu = new Menu(prompt, menuPunkter);
         int indexValgt = forespørgslerMenu.Kør();
 
@@ -272,52 +272,67 @@ class GenspilManagementSystem
 
     private void RedSletForespoergselMenu()
     {
-        string prompt = "--- Rediger/Slet Forespørgsel ---\n";
-        string[] menuPunkter = { "Rediger forespørgsel", "Slet forespørgsel", "Tilbage" };
+        string prompt = "--- Opdater/Slet Forespørgsel ---\n";
+        string[] menuPunkter = { "Opdater status", "Slet forespørgsel", "Tilbage" };
         Menu redSletForespoergselMenu = new Menu(prompt, menuPunkter);
         int indexValgt = redSletForespoergselMenu.Kør();
 
-        Console.WriteLine("Indtast forespørgselsnummer: ");
-        if (int.TryParse(Console.ReadLine(), out int forespørgselsNr))
+        switch (indexValgt)
         {
-            var forespørgsel = ForespoergselManager.forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNr);
-            if (forespørgsel == null)
-            {
-                Console.WriteLine("Forespørgslen blev ikke fundet.");
-                Thread.Sleep(2000);
+            case 0:
+
+                Console.Write("Indtast forespørgselsnummer: ");
+                if (int.TryParse(Console.ReadLine(), out int forespørgselsNr))
+                {
+                    var forespørgsel = ForespoergselManager.forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNr);
+                    if (forespørgsel == null)
+                    {
+                        Console.WriteLine("Forespørgslen blev ikke fundet.");
+                        Thread.Sleep(2000);
+                        KørForespoergselMenu();
+                        return;
+                    }
+                    else
+                    {
+                        ForespoergselManager.Instance.VisForespoergsel(forespørgsel);
+                        ForespoergselManager.Instance.OpdaterForespoergselStatus(forespørgsel);
+                        Thread.Sleep(2000);
+                        RedSletForespoergselMenu();
+                    }
+                }
+                break;
+            case 1:
+
+                Console.Write("Indtast forespørgselsnummer: ");
+                if (int.TryParse(Console.ReadLine(), out int forespørgselsNrR))
+                {
+                    var forespørgsel = ForespoergselManager.forespoergsler.Find(f => f.ForespoergselNr == forespørgselsNrR);
+                    if (forespørgsel == null)
+                    {
+                        Console.WriteLine("Forespørgslen blev ikke fundet.");
+                        Thread.Sleep(2000);
+                        KørForespoergselMenu();
+                        return;
+                    }
+                    else
+                    {
+                        ForespoergselManager.Instance.VisForespoergsel(forespørgsel);
+                        ForespoergselManager.Instance.SletForespoergsel(forespørgselsNrR);
+                        Thread.Sleep(2000);
+                        RedSletForespoergselMenu();
+                    }
+                }
+                break;
+            case 2:
                 KørForespoergselMenu();
                 return;
-            }
-            else
-            {
-                ForespoergselManager.Instance.VisForespoergsel(forespørgsel);
-                switch (indexValgt)
-                {
-                    case 0:
-                        ForespoergselManager.Instance.RedigerForespoergsel(forespørgsel);
-                        Thread.Sleep(2000);
-                        RedSletForespoergselMenu();
-                        break;
-                    case 1:
-                        ForespoergselManager.Instance.SletForespoergsel(forespørgselsNr);
-                        Thread.Sleep(2000);
-                        RedSletForespoergselMenu();
-                        break;
-                    case 2:
-                        Console.WriteLine("Annulleret");
-                        Thread.Sleep(2000);
-                        RedSletForespoergselMenu();
-                        return;
-                }
-            }
         }
-
     }
     private void KørReservationMenu()
     {
         saveAll();
         string prompt = "--- Reservationer ---\n";
-        string[] menuPunkter = { "Tilføj reservation", "Vis reservationer", "Rediger/Slet reservation", "Tilbage" };
+        string[] menuPunkter = { "Tilføj reservation", "Vis reservationer", "Opdater/Slet reservation", "Tilbage" };
         Menu reservationerMenu = new Menu(prompt, menuPunkter);
         int indexValgt = reservationerMenu.Kør();
 
@@ -346,44 +361,60 @@ class GenspilManagementSystem
 
     private void RedSletReservationMenu()
     {
-        string prompt = "--- Rediger/Slet Reservation ---\n";
-        string[] menuPunkter = {"Rediger reservation", "Slet reservation", "Tilbage"};
+        string prompt = "--- Opdater/Slet Reservation ---\n";
+        string[] menuPunkter = {"Opdater status", "Slet reservation", "Tilbage"};
         Menu redSletReservationMenu = new Menu(prompt, menuPunkter);
         int indexValgt = redSletReservationMenu.Kør();
 
-        Console.Write("Indtast afhentningsnr.: ");
-        if (int.TryParse(Console.ReadLine(), out int afhentningsNr))
+        switch (indexValgt)
         {
-            var reservation = ReservationManager.reservationer.Find(f => f.AfhentningsNr == afhentningsNr);
-            if (reservation == null)
-            {
-                Console.WriteLine("Reservationen blev ikke fundet.");
-                Thread.Sleep(2000);
-                KørReservationMenu();
-                return;
-            }
-            else
-            {
-                ReservationManager.Instance.VisReservation(reservation);
-                switch (indexValgt)
+            case 0:
+                Console.Write("Indtast afhentningsnr.: ");
+                if (int.TryParse(Console.ReadLine(), out int afhentningsNr))
                 {
-                    case 0:
-                        ReservationManager.Instance.RedigerReservation(reservation);
+                    var reservation = ReservationManager.reservationer.Find(f => f.AfhentningsNr == afhentningsNr);
+                    if (reservation == null)
+                    {
+                        Console.WriteLine("Reservationen blev ikke fundet.");
                         Thread.Sleep(2000);
-                        KørReservationMenu();
-                        break;
-                    case 1:
-                        ReservationManager.Instance.SletReservation(afhentningsNr);
+                        RedSletReservationMenu();
+                        return;
+                    }
+                    else
+                    {
+                        ReservationManager.Instance.VisReservation(reservation);
+                        ReservationManager.Instance.OpdaterReservationStatus(reservation);
                         Thread.Sleep(2000);
-                        KørReservationMenu();
-                        break;
-                    case 2:
-                        Console.WriteLine("Annulleret");
-                        Thread.Sleep(2000);
-                        KørReservationMenu();
-                        break;
+                        RedSletReservationMenu();
+                    }
                 }
-            }
+                break;
+
+            case 1:
+                Console.Write("Indtast afhentningsnr.: ");
+                if (int.TryParse(Console.ReadLine(), out int afhentningsNrR))
+                {
+                    var reservation = ReservationManager.reservationer.Find(f => f.AfhentningsNr == afhentningsNrR);
+                    if (reservation == null)
+                    {
+                        Console.WriteLine("Reservationen blev ikke fundet.");
+                        Thread.Sleep(2000);
+                        RedSletReservationMenu();
+                        return;
+                    }
+                    else
+                    {
+                        ReservationManager.Instance.VisReservation(reservation);
+                        ReservationManager.Instance.SletReservation(afhentningsNrR);
+                        Thread.Sleep(2000);
+                        RedSletReservationMenu();
+                    }
+                }
+                break;
+
+            case 2:
+                KørReservationMenu();
+                break;
         }
     }
 

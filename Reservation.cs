@@ -38,7 +38,6 @@ internal class ReservationManager
 {
     private static ReservationManager _instance;
     public static List<Reservation> reservationer = new List<Reservation>();
-    private bool _defaultReservationsAdded = false;
 
     public static ReservationManager Instance
     {
@@ -59,7 +58,7 @@ internal class ReservationManager
             Console.WriteLine("Ugyldig dato. Prøv igen.");
             inputDato = Console.ReadLine();
         }
-        Console.Write("Indtast status (1. Oprettet | 2. Klar | 3. Afhentet | 4. Annulleret): \n");
+        Console.Write("Indtast status (1. Oprettet | 2. Klar | 3. Afhentet | 4. Annulleret): ");
         ReservationStatus status = (ReservationStatus)int.Parse(Console.ReadLine());
 
         string promptBræt = "Vil du vælge eksisterende brætspil eller oprette nyt brætspil?";
@@ -187,9 +186,9 @@ internal class ReservationManager
         }
     }
 
-    public void RedigerReservation(Reservation reservation)
+    public void OpdaterReservationStatus(Reservation reservation)
     {
-        Console.WriteLine("Indtast ny status: 1 = Oprettet,  2 = Klar, 3 = Afhentet, 4 = Annulleret \n");
+        Console.Write("Indtast ny status (1 = Oprettet,  2 = Klar, 3 = Afhentet, 4 = Annulleret): ");
 
         if (int.TryParse(Console.ReadLine(), out int statusNum) && Enum.IsDefined(typeof(ReservationStatus), statusNum))
         {

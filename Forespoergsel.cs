@@ -34,7 +34,6 @@ internal class ForespoergselManager
 {
     private static ForespoergselManager _instance;
     public static List<Forespoergsel> forespoergsler = new List<Forespoergsel>();
-    private bool _defaultForespoergslersAdded = false;
 
     public static ForespoergselManager Instance
     {
@@ -167,9 +166,9 @@ internal class ForespoergselManager
             Console.WriteLine("\nTryk på enhver knap for at gå tilbage.");
         }
     }
-    public void RedigerForespoergsel(Forespoergsel forespørgsel)
+    public void OpdaterForespoergselStatus(Forespoergsel forespørgsel)
     {
-        Console.WriteLine("Indtast ny status: 1 = Afventer, 2 = Afsluttet, 3 = Annulleret: ");
+        Console.Write("Indtast ny status (1 = Afventer, 2 = Afsluttet, 3 = Annulleret): ");
 
         if (int.TryParse(Console.ReadLine(), out int statusNum) && Enum.IsDefined(typeof(ForespoergselsStatus), statusNum))
         {
