@@ -34,6 +34,20 @@ internal class KundeManager
             return _instance;
         }
     }
+    public (string navn, string email, string adresse, string tlfNr) OpretNyKunde()
+    {
+        Console.Write("Indtast navn: ");
+        string navn = Console.ReadLine();
+        Console.Write("Indtast email: ");
+        string email = Console.ReadLine();
+        Console.Write("Indtast adresse: ");
+        string adresse = Console.ReadLine();
+        Console.Write("Indtast telefonnummer: ");
+        string tlfNr = Console.ReadLine();
+
+        return (navn, email, adresse, tlfNr);
+    }
+
 
     public Kunde OpretKunde(string navn, string email, string adresse, string tlfNr)
     {
@@ -87,4 +101,50 @@ internal class KundeManager
             Console.WriteLine($"KundeNr.: {kunde.KundeId}, Navn: {kunde.Navn}, Adresse: {kunde.Adresse}, Email: {kunde.Email}, TlfNr: {kunde.TlfNr}");
         }
     }
+
+    public int VaelgKunde()
+    {
+        var kunder = KundeManager.Instance.kunder.Values.ToList();
+        if (kunder.Count == 0)
+        {
+            Console.WriteLine("Ingen kunder tilgængelige. Tilføj en kunde først.");
+            return -1;
+        }
+
+        int index = -1;
+        bool gyldigtValg = false;
+
+        while (!gyldigtValg)
+        {
+            VisAlleKunder();
+            Console.Write("Indtast nummer på kunde: ");
+            if (int.TryParse(Console.ReadLine(), out int valg) &&
+                valg > 0 && valg <= kunder.Count)
+            {
+                index = valg - 1;
+                gyldigtValg = true;
+            }
+            else
+            {
+                Console.WriteLine("Ugyldigt valg. Prøv igen.");
+            }
+        }
+
+        return index;
+    }
+    public Kunde HentKunde(int index)
+    {
+        var kunder = KundeManager.Instance.kunder.Values.ToList();
+        if (index >= 0 && index < kunder.Count)
+        {
+            return kunder[index];
+        }
+        return null;
+    }
+    public int GetCustomerCount()
+    {
+        return kunder.Count;
+    }
+
+
 }

@@ -53,11 +53,12 @@ internal class MedarbejderManager
         }
 
         Console.WriteLine("\nMedarbejdere:\n");
-        foreach (var medarbejder in medarbejdere)
+        for (int i = 0; i < medarbejdere.Count; i++)
         {
-            Console.WriteLine($"Navn: {medarbejder.Navn}, Brugernavn: {medarbejder.BrugerNavn}");
+            var m = medarbejdere[i];
+            Console.WriteLine($"{i + 1}. Navn: {m.Navn}, Brugernavn: {m.Brugernavn}");
+            Console.ResetColor();
         }
-        Console.ResetColor();
     }
 
     public void TilføjNyMedarbejder()
@@ -73,6 +74,50 @@ internal class MedarbejderManager
         Medarbejder medarbejder = new Medarbejder(navn, brugernavn);
         medarbejdere.Add(medarbejder);
         Console.WriteLine("Medarbejder Oprettet: " + brugernavn);
+    }
+
+    public int VaelgMedarbejder()
+    {
+        if (medarbejdere.Count == 0)
+        {
+            Console.WriteLine("Ingen medarbejdere tilgængelige. Tilføj en medarbejder først.");
+            return -1;
+        }
+
+        int index = -1;
+        bool gyldigtValg = false;
+
+        while (!gyldigtValg)
+        {
+            VisMedarbejdere();
+            Console.Write("Indtast nummer på medarbejder: ");
+            if (int.TryParse(Console.ReadLine(), out int valg) &&
+                valg > 0 && valg <= medarbejdere.Count)
+            {
+                index = valg - 1;
+                gyldigtValg = true;
+            }
+            else
+            {
+                Console.WriteLine("Ugyldigt valg. Prøv igen.");
+            }
+        }
+
+        return index;
+    }
+
+
+    public Medarbejder HentMedarbejder(int index)
+    {
+        if (index >= 0 && index < medarbejdere.Count)
+        {
+            return medarbejdere[index];
+        }
+        return null;
+    }
+    public int GetMedarbejderCount()
+    {
+        return medarbejdere.Count;
     }
 }
 

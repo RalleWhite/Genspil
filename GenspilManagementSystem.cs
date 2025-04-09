@@ -125,7 +125,7 @@ class GenspilManagementSystem
     private void KørLagerMenu()
     {
         string prompt = "--- Lager ---\n";
-        string[] menuPunkter = { "Tilføj spil", "Fjern spil", "Vis lager", "Søg i lager", "Tilbage" };
+        string[] menuPunkter = { "Tilføj spil", "Opdater spil", "Fjern spil", "Vis lager", "Søg i lager", "Tilbage" };
         Menu lagerMenu = new Menu(prompt, menuPunkter);
         int indexValgt = lagerMenu.Kør();
 
@@ -137,26 +137,30 @@ class GenspilManagementSystem
                 Thread.Sleep(2000);
                 KørLagerMenu();
                 break;
-
             case 1:
+                Braetspil spil = BraetspilManager.Instance.OpretSpilOpdatering();
+                BraetspilManager.Instance.OpdaterSpil(spil);
+                Thread.Sleep(2000);
+                KørLagerMenu();
+                break;
+            case 2:
                 BraetspilManager.Instance.SpilUdgået();
                 Thread.Sleep(2000);
                 KørLagerMenu();
                 break;
-
-            case 2:
+            case 3:
                 BraetspilManager.Instance.VisLager();
                 Console.ReadKey(true);
                 KørLagerMenu();
                 break;
 
-            case 3:
+            case 4:
                 BraetspilManager.Instance.SoegSpil();
                 Console.ReadKey(true);
                 KørLagerMenu();
                 break;
 
-            case 4:
+            case 5:
                 KørStartMenu();
                 break;
         }
